@@ -1,12 +1,16 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/Skeleton";
 import { CategoryPills, type CategoryKey } from "@/components/CategoryPills";
 import { MapView } from "@/components/MapView";
 import Hero from "@/components/Hero";
 
-export default function Home() {
+function HomeContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [facilities, setFacilities] = useState<any[]>([]);
@@ -17,6 +21,28 @@ export default function Home() {
   const [hasPool, setHasPool] = useState(false);
   const [is24h, setIs24h] = useState(false);
   const [sort, setSort] = useState("rating");
+
+  // Initialize state from URL params on mount
+  useEffect(() => {
+    const cityParam = searchParams.get("city");
+    const stateParam = searchParams.get("state");
+    const categoriesParam = searchParams.get("categories");
+    const openNowParam = searchParams.get("openNow");
+    const hasPoolParam = searchParams.get("hasPool");
+    const is24hParam = searchParams.get("is24h");
+    const sortParam = searchParams.get("sort");
+
+    if (cityParam) setCity(cityParam);
+    if (stateParam) setState(stateParam);
+    if (categoriesParam) {
+      const cats = categoriesParam.split(",") as CategoryKey[];
+      setSelectedCats(new Set(cats));
+    }
+    if (openNowParam) setOpenNow(openNowParam === "1");
+    if (hasPoolParam) setHasPool(hasPoolParam === "1");
+    if (is24hParam) setIs24h(is24hParam === "1");
+    if (sortParam) setSort(sortParam);
+  }, [searchParams]);
 
   async function search() {
     if (!city && !state) return;
@@ -29,6 +55,10 @@ export default function Home() {
     if (hasPool) params.set("hasPool", "1");
     if (is24h) params.set("is24h", "1");
     if (sort) params.set("sort", sort);
+    
+    // Update URL with search parameters
+    router.push(`/?${params.toString()}`, { scroll: false });
+    
     try {
       const res = await fetch(`/api/facilities?${params.toString()}`);
       if (!res.ok) {
@@ -39,7 +69,7 @@ export default function Home() {
         const data = await res.json();
         setFacilities(Array.isArray(data) ? data : []);
       }
-    } catch (e) {
+    } catch {
       setError("Network error. Check API keys and server logs.");
     }
     setIsLoading(false);
@@ -114,22 +144,24 @@ export default function Home() {
             {error}
           </div>
         )}
-        <div className="mb-4 text-sm flex items-center gap-4">
-          <label className="text-neutral-700">Sort</label>
-          <select className="border rounded px-2 py-1" value={sort} onChange={(e) => setSort(e.target.value)}>
-            <option value="rating">Rating</option>
-            <option value="distance">Distance</option>
-          </select>
-          <button
-            className="px-3 py-1 rounded border bg-white hover:bg-neutral-50 no-underline"
-            onClick={() => {
-              const dialog = document.getElementById("map-modal") as HTMLDialogElement | null;
-              if (dialog) dialog.showModal();
-            }}
-          >
-            Show map
-          </button>
-        </div>
+        {!isLoading && facilities.length > 0 && (
+          <div className="mb-4 text-sm flex items-center gap-4">
+            <label className="text-neutral-700">Sort</label>
+            <select className="border rounded px-2 py-1" value={sort} onChange={(e) => setSort(e.target.value)}>
+              <option value="rating">Rating</option>
+              <option value="distance">Distance</option>
+            </select>
+            <button
+              className="px-3 py-1 rounded border bg-white hover:bg-neutral-50 no-underline"
+              onClick={() => {
+                const dialog = document.getElementById("map-modal") as HTMLDialogElement | null;
+                if (dialog) dialog.showModal();
+              }}
+            >
+              Show map
+            </button>
+          </div>
+        )}
         {isLoading && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -179,5 +211,13 @@ export default function Home() {
         </dialog>
       </section>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }

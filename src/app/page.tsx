@@ -1,103 +1,161 @@
-import Image from "next/image";
+"use client";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { Skeleton } from "@/components/Skeleton";
+import { CategoryPills, type CategoryKey } from "@/components/CategoryPills";
+import { MapView } from "@/components/MapView";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [facilities, setFacilities] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedCats, setSelectedCats] = useState<Set<CategoryKey>>(new Set());
+  const [openNow, setOpenNow] = useState(false);
+  const [hasPool, setHasPool] = useState(false);
+  const [is24h, setIs24h] = useState(false);
+  const [sort, setSort] = useState("rating");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  async function search() {
+    if (!city && !state) return;
+    setIsLoading(true);
+    const params = new URLSearchParams();
+    if (city) params.set("city", city);
+    if (state) params.set("state", state);
+    if (selectedCats.size > 0) params.set("categories", Array.from(selectedCats).join(","));
+    if (openNow) params.set("openNow", "1");
+    if (hasPool) params.set("hasPool", "1");
+    if (is24h) params.set("is24h", "1");
+    if (sort) params.set("sort", sort);
+    try {
+      const res = await fetch(`/api/facilities?${params.toString()}`);
+      if (!res.ok) {
+        const msg = await res.text();
+        setError(`Error: ${res.status} ${msg}`);
+        setFacilities([]);
+      } else {
+        const data = await res.json();
+        setFacilities(Array.isArray(data) ? data : []);
+      }
+    } catch (e) {
+      setError("Network error. Check API keys and server logs.");
+    }
+    setIsLoading(false);
+  }
+
+  // Debounce search on input
+  const debounceKey = useMemo(
+    () => `${city}-${state}-${Array.from(selectedCats).sort().join("|")}-${openNow}-${hasPool}-${is24h}-${sort}`.trim(),
+    [city, state, selectedCats, openNow, hasPool, is24h, sort]
+  );
+  useEffect(() => {
+    if (!city && !state) return;
+    setError(null);
+    const t = setTimeout(() => search(), 300);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounceKey]);
+
+  return (
+    <main className="min-h-screen bg-white text-black">
+      <section className="mx-auto max-w-5xl px-4 pt-16 pb-10">
+        <h1 className="text-5xl font-extrabold tracking-tight leading-tight mb-4">
+          Discover gyms, studios, and fitness centers
+        </h1>
+        <p className="text-neutral-600 mb-8">
+          Search fitness facilities by city using Google Places. Find gyms, yoga studios, CrossFit, pilates, martial arts and more.
+        </p>
+        <div className="flex gap-2 items-end flex-wrap">
+          <div className="flex flex-col">
+            <label className="text-sm text-neutral-600">City</label>
+            <input
+              aria-label="City"
+              className="border rounded-md px-3 py-2"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="Austin"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </div>
+          <div className="flex flex-col">
+            <label className="text-sm text-neutral-600">State</label>
+            <input
+              aria-label="State"
+              className="border rounded-md px-3 py-2 w-24"
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              placeholder="TX"
+              maxLength={2}
+            />
+          </div>
+          <button
+            onClick={search}
+            className="h-10 px-4 rounded-md bg-black text-white font-medium"
           >
-            Read our docs
-          </a>
+            Search
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+        <div className="mt-4">
+          <CategoryPills
+            selected={selectedCats}
+            onToggle={(key) => {
+              const next = new Set(selectedCats);
+              if (next.has(key)) next.delete(key);
+              else next.add(key);
+              setSelectedCats(next);
+            }}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </div>
+        <div className="mt-4 flex gap-4 items-center flex-wrap text-sm">
+          <label className="flex items-center gap-2"><input type="checkbox" checked={openNow} onChange={(e) => setOpenNow(e.target.checked)} /> Open now</label>
+          <label className="flex items-center gap-2"><input type="checkbox" checked={hasPool} onChange={(e) => setHasPool(e.target.checked)} /> Has pool</label>
+          <label className="flex items-center gap-2"><input type="checkbox" checked={is24h} onChange={(e) => setIs24h(e.target.checked)} /> 24/7</label>
+          <label className="flex items-center gap-2">Sort
+            <select className="border rounded px-2 py-1" value={sort} onChange={(e) => setSort(e.target.value)}>
+              <option value="rating">Rating</option>
+              <option value="distance">Distance</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-5xl px-4 pb-20">
+        {error && (
+          <div role="alert" className="mb-4 text-red-700">
+            {error}
+          </div>
+        )}
+        {isLoading && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} className="h-28" />
+            ))}
+          </div>
+        )}
+        {!isLoading && facilities.length > 0 && (
+          <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {facilities.map((v) => (
+              <li key={v.id} className="border rounded-lg p-4 hover:shadow-sm">
+                <h3 className="font-semibold text-lg">{v.name}</h3>
+                <p className="text-sm text-neutral-600">{v.address}</p>
+                <div className="mt-3">
+                  <Link
+                    className="text-blue-600 hover:underline"
+                    href={`/facilities/${encodeURIComponent(v.id)}`}
+                  >
+                    View details
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+        {!isLoading && facilities.length > 0 && (
+          <div className="mt-8">
+            <MapView facilities={facilities} />
+          </div>
+        )}
+      </section>
+    </main>
   );
 }

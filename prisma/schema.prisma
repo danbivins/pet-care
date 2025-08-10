@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Venue {
+  id             String   @id @default(cuid())
+  name           String
+  address        String
+  city           String
+  state          String
+  postalCode     String?
+  country        String   @default("US")
+  latitude       Float?
+  longitude      Float?
+  capacity       Int?
+  genreFocus     String?
+  googlePlaceId  String?  @unique
+  phone          String?
+  website        String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  events         Event[]
+  reviews        Review[]
+}
+
+model Event {
+  id         String   @id @default(cuid())
+  venueId    String
+  artistName String
+  date       DateTime
+  ticketUrl  String?
+  minPrice   Float?
+  maxPrice   Float?
+  genre      String?
+  source     String   // ticketmaster | bandsintown
+  createdAt  DateTime @default(now())
+
+  venue      Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@index([venueId, date])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  venueId    String
+  rating     Int
+  reviewText String?
+  date       DateTime @default(now())
+  source     String?  // google | user
+
+  venue      Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@index([venueId])
+}
+
+model ApiCache {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  payload   Json
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}

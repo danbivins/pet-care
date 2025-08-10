@@ -1,5 +1,16 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## GoFitLocal - Fitness Facility Directory
+
+A comprehensive directory for finding gyms, yoga studios, CrossFit boxes, and other fitness centers across the United States.
+
+### Features
+- Search by city and state
+- Filter by facility type (gym, yoga, CrossFit, etc.)
+- Interactive maps
+- Real-time facility data via Google Places API
+- Mobile-responsive design
+
 ## Getting Started
 
 First, run the development server:

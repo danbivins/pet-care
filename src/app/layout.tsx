@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
+import { GoogleAnalytics } from "@/components/Analytics";
+import { defaultMetadata, websiteJsonLd } from "@/lib/seo";
 import Providers from "./providers";
 
 const geistSans = Geist({
@@ -15,11 +17,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "GoFitLocal — Discover Gyms, Studios & Fitness Centers",
-  description:
-    "Search gyms, yoga, CrossFit, pilates, martial arts, and more. Powered by Google Places.",
-};
+export const metadata: Metadata = defaultMetadata;
 
 export default function RootLayout({
   children,
@@ -28,6 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b">
@@ -36,6 +40,14 @@ export default function RootLayout({
                 <span className="inline-block w-6 h-6 bg-black rounded-sm" aria-hidden />
                 <span className="font-extrabold text-xl tracking-tight">GoFitLocal</span>
               </Link>
+              <nav className="hidden md:flex items-center gap-6 text-sm">
+                <Link href="/cities" className="hover:text-blue-600 transition-colors">
+                  Popular Cities
+                </Link>
+                <Link href="/how-it-works" className="hover:text-blue-600 transition-colors">
+                  How It Works
+                </Link>
+              </nav>
             </div>
           </header>
           {children}
@@ -43,11 +55,14 @@ export default function RootLayout({
             <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-neutral-600 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <p>© {new Date().getFullYear()} GoFitLocal. All rights reserved.</p>
               <div className="flex gap-4">
-                <a className="hover:underline" href="/legal">Legal & Sources</a>
+                <Link className="hover:underline" href="/cities">Popular Cities</Link>
+                <Link className="hover:underline" href="/how-it-works">How It Works</Link>
+                <Link className="hover:underline" href="/legal">Legal & Sources</Link>
               </div>
             </div>
           </footer>
         </Providers>
+        <GoogleAnalytics />
         <Analytics />
       </body>
     </html>

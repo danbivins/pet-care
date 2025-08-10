@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { loadGoogleMaps } from "@/lib/googleMapsLoader";
+import { analytics } from "@/components/Analytics";
 
 type Place = {
   name?: string;
@@ -40,6 +41,9 @@ export default function Client({ id }: { id: string }) {
               setPlace(result);
               const urls = (result.photos || []).slice(0, 6).map((p: any) => p.getUrl({ maxWidth: 1200 }));
               setPhotoUrls(urls);
+              
+              // Track facility view
+              analytics.trackFacilityView(id, result.name || "Unknown Facility");
             } else {
               setError(String(status));
             }
@@ -76,7 +80,13 @@ export default function Client({ id }: { id: string }) {
             )}
             {place.website && (
               <p>
-                <a href={place.website} className="text-blue-600" target="_blank" rel="noreferrer">
+                <a 
+                  href={place.website} 
+                  className="text-blue-600" 
+                  target="_blank" 
+                  rel="noreferrer"
+                  onClick={() => analytics.trackExternalLink("website", place.name || "Unknown")}
+                >
                   {place.website}
                 </a>
               </p>

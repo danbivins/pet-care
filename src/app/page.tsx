@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/Skeleton";
 import { CategoryPills, type CategoryKey } from "@/components/CategoryPills";
 import { MapView } from "@/components/MapView";
+import { analytics } from "@/components/Analytics";
 import Hero from "@/components/Hero";
 
 function HomeContent() {
@@ -68,6 +69,9 @@ function HomeContent() {
       } else {
         const data = await res.json();
         setFacilities(Array.isArray(data) ? data : []);
+        
+        // Track successful search
+        analytics.trackSearch(city, state, Array.from(selectedCats));
       }
     } catch {
       setError("Network error. Check API keys and server logs.");
@@ -154,6 +158,7 @@ function HomeContent() {
             <button
               className="px-3 py-1 rounded border bg-white hover:bg-neutral-50 no-underline"
               onClick={() => {
+                analytics.trackMapInteraction("open_modal");
                 const dialog = document.getElementById("map-modal") as HTMLDialogElement | null;
                 if (dialog) dialog.showModal();
               }}

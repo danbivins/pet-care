@@ -1,5 +1,5 @@
 import { PrismaClient } from "@/generated/prisma";
-import type { ApiCache } from "@/generated/prisma";
+import type { Prisma } from "@/generated/prisma";
 
 const prisma = new PrismaClient();
 
@@ -40,10 +40,11 @@ export async function setCached<T = unknown>(key: string, payload: T, ttlMs: num
     return;
   }
   try {
+    const jsonPayload = payload as unknown as Prisma.InputJsonValue;
     await prisma.apiCache.upsert({
       where: { key },
-      create: { key, payload: payload as unknown as ApiCache["payload"], expiresAt: new Date(expiresAt) },
-      update: { payload: payload as unknown as ApiCache["payload"], expiresAt: new Date(expiresAt) },
+      create: { key, payload: jsonPayload, expiresAt: new Date(expiresAt) },
+      update: { payload: jsonPayload, expiresAt: new Date(expiresAt) },
     });
   } catch {
     memoryCache.set(key, { payload, expiresAt });

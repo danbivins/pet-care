@@ -4,6 +4,8 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # Skip Husky install in CI
+  HUSKY = "0"
 
 # Netlify auto-detects Next.js and uses its Next runtime
 # https://docs.netlify.com/integrations/frameworks/next-js/overview/

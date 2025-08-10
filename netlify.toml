@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Netlify auto-detects Next.js and uses its Next runtime
+# https://docs.netlify.com/integrations/frameworks/next-js/overview/
+

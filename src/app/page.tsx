@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Skeleton } from "@/components/Skeleton";
 import { CategoryPills, type CategoryKey } from "@/components/CategoryPills";
 import { MapView } from "@/components/MapView";
+import Hero from "@/components/Hero";
 
 export default function Home() {
   const [city, setCity] = useState("");
@@ -59,29 +60,23 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white text-black">
-      <section className="mx-auto max-w-5xl px-4 pt-16 pb-10">
-        <h1 className="text-5xl font-extrabold tracking-tight leading-tight mb-4">
-          Discover gyms, studios, and fitness centers
-        </h1>
-        <p className="text-neutral-600 mb-8">
-          Search fitness facilities by city using Google Places. Find gyms, yoga studios, CrossFit, pilates, martial arts and more.
-        </p>
-        <div className="flex gap-2 items-end flex-wrap">
+      <Hero>
+        <div className="flex gap-3 items-end flex-wrap">
           <div className="flex flex-col">
-            <label className="text-sm text-neutral-600">City</label>
+            <label className="text-sm text-black">City</label>
             <input
               aria-label="City"
-              className="border rounded-md px-3 py-2"
+              className="input focus:outline-brand"
               value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder="Austin"
             />
           </div>
           <div className="flex flex-col">
-            <label className="text-sm text-neutral-600">State</label>
+            <label className="text-sm text-black">State</label>
             <input
               aria-label="State"
-              className="border rounded-md px-3 py-2 w-24"
+              className="input w-24 focus:outline-brand"
               value={state}
               onChange={(e) => setState(e.target.value)}
               placeholder="TX"
@@ -90,7 +85,7 @@ export default function Home() {
           </div>
           <button
             onClick={search}
-            className="h-10 px-4 rounded-md bg-black text-white font-medium"
+            className="h-12 px-6 rounded-xl bg-[#023e8a] hover:bg-[#032d66] text-white font-semibold shadow-sm"
           >
             Search
           </button>
@@ -110,51 +105,78 @@ export default function Home() {
           <label className="flex items-center gap-2"><input type="checkbox" checked={openNow} onChange={(e) => setOpenNow(e.target.checked)} /> Open now</label>
           <label className="flex items-center gap-2"><input type="checkbox" checked={hasPool} onChange={(e) => setHasPool(e.target.checked)} /> Has pool</label>
           <label className="flex items-center gap-2"><input type="checkbox" checked={is24h} onChange={(e) => setIs24h(e.target.checked)} /> 24/7</label>
-          <label className="flex items-center gap-2">Sort
-            <select className="border rounded px-2 py-1" value={sort} onChange={(e) => setSort(e.target.value)}>
-              <option value="rating">Rating</option>
-              <option value="distance">Distance</option>
-            </select>
-          </label>
         </div>
-      </section>
+      </Hero>
 
-      <section className="mx-auto max-w-5xl px-4 pb-20">
+      <section className="mx-auto max-w-6xl px-4 pb-24 mt-12">
         {error && (
           <div role="alert" className="mb-4 text-red-700">
             {error}
           </div>
         )}
+        <div className="mb-4 text-sm flex items-center gap-4">
+          <label className="text-neutral-700">Sort</label>
+          <select className="border rounded px-2 py-1" value={sort} onChange={(e) => setSort(e.target.value)}>
+            <option value="rating">Rating</option>
+            <option value="distance">Distance</option>
+          </select>
+          <button
+            className="px-3 py-1 rounded border bg-white hover:bg-neutral-50 no-underline"
+            onClick={() => {
+              const dialog = document.getElementById("map-modal") as HTMLDialogElement | null;
+              if (dialog) dialog.showModal();
+            }}
+          >
+            Show map
+          </button>
+        </div>
         {isLoading && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-28" />
+              <Skeleton key={i} className="h-36 rounded-2xl" />
             ))}
           </div>
         )}
         {!isLoading && facilities.length > 0 && (
-          <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {facilities.map((v) => (
-              <li key={v.id} className="border rounded-lg p-4 hover:shadow-sm">
-                <h3 className="font-semibold text-lg">{v.name}</h3>
-                <p className="text-sm text-neutral-600">{v.address}</p>
+          <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {facilities.map((v) => {
+              const nameId = `facility-${v.id}`;
+              return (
+              <li key={v.id} className="card p-5 hover:shadow-sm transition-shadow bg-white">
+                <div className="flex items-start justify-between">
+                  <h3 id={nameId} className="font-semibold text-xl leading-tight">{v.name}</h3>
+                </div>
+                <p className="text-sm text-neutral-600 mt-1">{v.address}</p>
                 <div className="mt-3">
                   <Link
-                    className="text-blue-600 hover:underline"
+                    className="text-blue-600"
                     href={`/facilities/${encodeURIComponent(v.id)}`}
+                    aria-describedby={nameId}
                   >
                     View details
                   </Link>
                 </div>
               </li>
-            ))}
+            );})}
           </ul>
         )}
         {!isLoading && facilities.length > 0 && (
-          <div className="mt-8">
+          <div className="mt-12">
             <MapView facilities={facilities} />
           </div>
         )}
+        {/* Full-screen map dialog */}
+        <dialog id="map-modal" className="backdrop:bg-black/40 rounded-lg p-0">
+          <div className="w-[90vw] h-[80vh] max-w-6xl bg-white rounded-lg overflow-hidden">
+            <div className="flex justify-between items-center p-3 border-b">
+              <h2 className="font-semibold">Map view</h2>
+              <button onClick={() => (document.getElementById('map-modal') as HTMLDialogElement).close()} className="px-2 py-1 rounded border">Close</button>
+            </div>
+            <div className="p-4">
+              <MapView facilities={facilities} />
+            </div>
+          </div>
+        </dialog>
       </section>
     </main>
   );

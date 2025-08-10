@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { loadGoogleMaps } from "@/lib/googleMapsLoader";
 
 type Facility = {
   id: string;
@@ -13,16 +14,7 @@ export function MapView({ facilities }: { facilities: Facility[] }) {
 
   useEffect(() => {
     if (!mapRef.current) return;
-    // Load Google Maps JS API
-    if (!(window as any).google?.maps) {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
-      script.async = true;
-      script.onload = () => initMap();
-      document.body.appendChild(script);
-      return;
-    }
-    initMap();
+    loadGoogleMaps(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "").then(() => initMap());
 
     function initMap() {
       const valid = facilities.filter((f) => typeof f.latitude === "number" && typeof f.longitude === "number");

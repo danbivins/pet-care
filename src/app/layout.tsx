@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
@@ -31,10 +32,10 @@ export default function RootLayout({
         <Providers>
           <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b">
             <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
-              <a href="/" className="flex items-center gap-3">
+              <Link href="/" className="flex items-center gap-3">
                 <span className="inline-block w-6 h-6 bg-black rounded-sm" aria-hidden />
                 <span className="font-extrabold text-xl tracking-tight">FitFind</span>
-              </a>
+              </Link>
             </div>
           </header>
           {children}

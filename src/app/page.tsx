@@ -1,13 +1,15 @@
 "use client";
-import { useEffect, useMemo, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/Skeleton";
 import { CategoryPills, type CategoryKey } from "@/components/CategoryPills";
-import { MapView } from "@/components/MapView";
 import { analytics } from "@/components/Analytics";
 import { generateShortDescription } from "@/lib/facilityDescriptions-simple";
 import Hero from "@/components/Hero";
+
+// Lazy load heavy components
+const MapView = lazy(() => import("@/components/MapView").then(mod => ({ default: mod.MapView })));
 
 function HomeContent() {
   const router = useRouter();
@@ -120,8 +122,7 @@ function HomeContent() {
     if ((cityParam || stateParam) && (city || state)) {
       search();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [searchParams, city, state]);
 
   return (
     <main className="min-h-screen bg-white text-black">
@@ -270,7 +271,9 @@ function HomeContent() {
         )}
         {!isLoading && facilities.length > 0 && (
           <div className="mt-12">
-            <MapView facilities={facilities} />
+            <Suspense fallback={<div className="h-96 bg-gray-100 rounded-lg animate-pulse" />}>
+              <MapView facilities={facilities} />
+            </Suspense>
           </div>
         )}
         {/* Full-screen map dialog */}

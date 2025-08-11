@@ -46,15 +46,13 @@ export default function KettlebellTrainingGuide() {
 
       {/* Hero Image */}
       <div className="mb-12">
-        <div className="relative w-full h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-gray-100 to-gray-200">
-          {/* TODO: Replace with actual kettlebell image - currently using placeholder */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center text-gray-500">
-              <div className="text-6xl mb-4">🏋️</div>
-              <p className="text-lg font-medium">Kettlebell Training Setup</p>
-              <p className="text-sm">Professional equipment for strength and conditioning</p>
-            </div>
-          </div>
+        <div className="relative w-full h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-lg">
+          <img
+            src="/kettlebell-hero.jpg"
+            alt="Collection of kettlebells and battle ropes on wooden platform - various weights including 53LB ADER kettlebell, outdoor gym equipment setup"
+            className="w-full h-full object-cover"
+            loading="eager"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
         </div>
         <p className="text-sm text-gray-500 mt-3 text-center">

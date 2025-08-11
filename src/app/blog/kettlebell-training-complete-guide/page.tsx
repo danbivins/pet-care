@@ -46,38 +46,17 @@ export default function KettlebellTrainingGuide() {
 
       {/* Hero Image */}
       <div className="mb-12">
-        <div className="relative w-full h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900">
-          {/* Professional placeholder until image is added */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center text-white">
-              <div className="text-8xl mb-6">🏋️</div>
-              <h2 className="text-3xl font-bold mb-3">Kettlebell Training</h2>
-              <p className="text-xl text-gray-200 mb-2">Complete Guide to Building Strength</p>
-              <p className="text-lg text-gray-300">Power • Endurance • Functional Fitness</p>
-            </div>
-          </div>
-          
-          {/* Equipment icons overlay */}
-          <div className="absolute bottom-4 left-4 text-white/80">
-            <div className="flex items-center gap-2 text-sm">
-              <span>⚖️</span>
-              <span>Various Weights</span>
-            </div>
-          </div>
-          <div className="absolute bottom-4 right-4 text-white/80">
-            <div className="flex items-center gap-2 text-sm">
-              <span>🥊</span>
-              <span>Battle Ropes</span>
-            </div>
-          </div>
-          
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+        <div className="relative w-full h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-lg">
+          <img
+            src="/kettlebell-hero.jpg"
+            alt="Collection of kettlebells and battle ropes on wooden platform - various weights including 53LB ADER kettlebell, outdoor gym equipment setup"
+            className="w-full h-full object-cover"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
         </div>
         <p className="text-sm text-gray-500 mt-3 text-center">
           Professional kettlebell setup with various weights and battle ropes for comprehensive strength training
-        </p>
-        <p className="text-xs text-gray-400 mt-1 text-center">
-          📸 Add your kettlebell image as &quot;kettlebell-hero.jpg&quot; in the public folder to replace this placeholder
         </p>
       </div>
 

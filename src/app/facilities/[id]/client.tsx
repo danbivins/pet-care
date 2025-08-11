@@ -108,43 +108,57 @@ export default function Client({ id }: { id: string }) {
           )}
 
           {/* Rich Description */}
-          <div className="bg-gray-50 rounded-xl p-6 mb-8">
+          <article className="bg-gray-50 rounded-xl p-6 mb-8">
             <div 
-              className="text-gray-700 leading-relaxed"
+              className="text-gray-700 leading-relaxed facility-description"
               dangerouslySetInnerHTML={{ 
                 __html: generateFacilityDescription(place)
               }}
             />
-          </div>
+          </article>
 
-          <section className="space-y-2">
-            {place.formatted_phone_number && (
-              <p><span className="font-medium">Phone:</span> {place.formatted_phone_number}</p>
-            )}
-            {place.website && (
-              <p>
-                <a 
-                  href={place.website} 
-                  className="text-blue-600" 
-                  target="_blank" 
-                  rel="noreferrer"
-                  onClick={() => analytics.trackExternalLink("website", place.name || "Unknown")}
-                >
-                  {place.website}
-                </a>
-              </p>
-            )}
-            {place.opening_hours?.weekday_text?.length ? (
-              <div className="mt-4">
-                <p className="font-medium">Hours</p>
-                <ul className="text-sm text-neutral-700">
-                  {place.opening_hours.weekday_text!.map((l: string) => (
-                    <li key={l}>{l}</li>
-                  ))}
-                </ul>
+          {/* Contact Information */}
+          {(place.formatted_phone_number || place.website) && (
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold mb-4" style={{ fontSize: '1.5rem' }}>Contact</h2>
+              <div className="space-y-3">
+                {place.formatted_phone_number && (
+                  <p style={{ fontSize: '1.25rem' }}>
+                    <span className="font-medium">Phone:</span> 
+                    <a href={`tel:${place.formatted_phone_number}`} className="text-blue-600 hover:underline ml-2">
+                      {place.formatted_phone_number}
+                    </a>
+                  </p>
+                )}
+                {place.website && (
+                  <p style={{ fontSize: '1.25rem' }}>
+                    <span className="font-medium">Website:</span>
+                    <a 
+                      href={place.website} 
+                      className="text-blue-600 hover:underline ml-2" 
+                      target="_blank" 
+                      rel="noreferrer"
+                      onClick={() => analytics.trackExternalLink("website", place.name || "Unknown")}
+                    >
+                      {place.website}
+                    </a>
+                  </p>
+                )}
               </div>
-            ) : null}
-          </section>
+            </section>
+          )}
+
+          {/* Hours */}
+          {place.opening_hours?.weekday_text?.length && (
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold mb-4" style={{ fontSize: '1.5rem' }}>Hours</h2>
+              <ul className="space-y-1">
+                {place.opening_hours.weekday_text.map((hours: string) => (
+                  <li key={hours} className="text-gray-700" style={{ fontSize: '1.25rem' }}>{hours}</li>
+                ))}
+              </ul>
+            </section>
+          )}
         </>
       )}
     </main>

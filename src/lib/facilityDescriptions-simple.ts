@@ -95,16 +95,16 @@ export function generateFacilityDescription(facility: SimpleFacilityData): strin
   }
   
   return `
-<strong>Overview:</strong><br/>
-${name} stands out as a premier ${type} in ${city}, offering a modern fitness destination designed for enthusiasts of all levels. Located in ${neighborhood}, this facility provides ${equipment} in a welcoming environment.
+<h2>Overview</h2>
+<p>${name} stands out as a premier ${type} in ${city}, offering a modern fitness destination designed for enthusiasts of all levels. Located in ${neighborhood}, this facility provides ${equipment} in a welcoming environment.</p>
 
-<strong>What Makes It Special:</strong><br/>
-The facility specializes in ${specialty}, creating an atmosphere where members can effectively pursue their fitness goals. ${ratingText}
+<h2>What Makes It Special</h2>
+<p>The facility specializes in ${specialty}, creating an atmosphere where members can effectively pursue their fitness goals. ${ratingText}</p>
 
-<strong>Perfect For:</strong><br/>
-This facility is ideal for ${ideal}. The welcoming community creates an encouraging environment where newcomers feel comfortable alongside experienced members.
+<h2>Perfect For</h2>
+<p>This facility is ideal for ${ideal}. The welcoming community creates an encouraging environment where newcomers feel comfortable alongside experienced members.</p>
 
-<strong>Location & Access:</strong><br/>
-Conveniently located at ${address}, the facility offers easy access for local residents and visitors to the area.
+<h2>Location & Access</h2>
+<p>Conveniently located at ${address}, the facility offers easy access for local residents and visitors to the area.</p>
 `.trim();
 }

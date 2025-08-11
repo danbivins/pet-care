@@ -69,3 +69,23 @@ body {
 /* Default underline for links (improves affordance & a11y) */
 a { text-decoration: underline; }
 .no-underline { text-decoration: none; }
+
+/* Facility description typography */
+.facility-description h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  margin-top: 1.5rem;
+  color: #1f2937;
+}
+
+.facility-description h2:first-child {
+  margin-top: 0;
+}
+
+.facility-description p {
+  font-size: 1.25rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  color: #374151;
+}

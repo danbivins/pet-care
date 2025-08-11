@@ -13,6 +13,14 @@ export const metadata: Metadata = {
 
 const blogPosts = [
   {
+    slug: "kettlebell-training-complete-guide",
+    title: "Kettlebell Training: Your Complete Guide to Building Strength, Power, and Endurance",
+    excerpt: "Master kettlebell training with our comprehensive guide. Learn proper form, programming, and expert techniques for building functional strength and explosive power.",
+    date: "2025-01-10",
+    readTime: "12 min read",
+    category: "Strength Training"
+  },
+  {
     slug: "what-to-look-for-in-a-new-gym",
     title: "What to Look for in a New Gym: Your Complete Selection Guide",
     excerpt: "Finding the right gym can make or break your fitness journey. This comprehensive guide will help you find the perfect fitness home.",

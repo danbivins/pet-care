@@ -115,14 +115,17 @@ function HomeContent() {
     setIsLoading(false);
   }
 
-  // Auto-search only when URL params are present (from direct navigation)
+  // Auto-search when URL params are present and all state is initialized
   useEffect(() => {
     const cityParam = searchParams.get("city");
     const stateParam = searchParams.get("state");
-    if ((cityParam || stateParam) && (city || state)) {
+    
+    // Only auto-search if we have URL params and the form state matches the URL params
+    // This ensures we don't search until all state is properly initialized
+    if (cityParam && stateParam && city === cityParam && state === stateParam) {
       search();
     }
-  }, [searchParams, city, state]);
+  }, [city, state, selectedCats, openNow, hasPool, is24h, sort]);
 
   return (
     <main className="min-h-screen bg-white text-black">

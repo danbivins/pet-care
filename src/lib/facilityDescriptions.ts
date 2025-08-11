@@ -166,8 +166,8 @@ export function generateFacilityDescription(facility: FacilityData): string {
     analysis.type
   );
   
-  const hasPhotos = facility.photos && facility.photos.length > 0;
-  const photoCount = hasPhotos ? facility.photos.length : 0;
+  const photoCount = facility.photos?.length ?? 0;
+  const hasPhotos = photoCount > 0;
   
   const facilityName = facility.name || 'This facility';
   const address = facility.formatted_address || 'this location';

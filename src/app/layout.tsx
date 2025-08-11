@@ -44,6 +44,9 @@ export default function RootLayout({
                 <Link href="/cities" className="hover:text-blue-600 transition-colors">
                   Popular Cities
                 </Link>
+                <Link href="/blog" className="hover:text-blue-600 transition-colors">
+                  Blog
+                </Link>
                 <Link href="/how-it-works" className="hover:text-blue-600 transition-colors">
                   How It Works
                 </Link>
@@ -56,6 +59,7 @@ export default function RootLayout({
               <p>© {new Date().getFullYear()} GoFitLocal. All rights reserved.</p>
               <div className="flex gap-4">
                 <Link className="hover:underline" href="/cities">Popular Cities</Link>
+                <Link className="hover:underline" href="/blog">Blog</Link>
                 <Link className="hover:underline" href="/how-it-works">How It Works</Link>
                 <Link className="hover:underline" href="/legal">Legal & Sources</Link>
               </div>

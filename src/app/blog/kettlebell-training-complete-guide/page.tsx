@@ -44,6 +44,24 @@ export default function KettlebellTrainingGuide() {
         </p>
       </header>
 
+      {/* Hero Image */}
+      <div className="mb-12">
+        <div className="relative w-full h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-gray-100 to-gray-200">
+          {/* TODO: Replace with actual kettlebell image - currently using placeholder */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center text-gray-500">
+              <div className="text-6xl mb-4">🏋️</div>
+              <p className="text-lg font-medium">Kettlebell Training Setup</p>
+              <p className="text-sm">Professional equipment for strength and conditioning</p>
+            </div>
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+        </div>
+        <p className="text-sm text-gray-500 mt-3 text-center">
+          Professional kettlebell setup with various weights and battle ropes for comprehensive strength training
+        </p>
+      </div>
+
       {/* Article Content */}
       <article>
         <div className="blog-content">
@@ -214,16 +232,16 @@ export default function KettlebellTrainingGuide() {
           <h3>Online Learning Resources</h3>
           <h4>YouTube Channels to Follow:</h4>
           <ul>
-            <li><strong>Pavel Tsatsouline</strong>: The father of modern kettlebell training</li>
-            <li><strong>Mark Wildman</strong>: Highly recommended for swing technique and programming concepts</li>
-            <li><strong>StrongFirst</strong>: Official channel with technique breakdowns and programming advice</li>
+            <li><strong>Pavel Tsatsouline</strong>: The father of modern kettlebell training <a href="https://youtu.be/5lSuYCma88w?si=AWODdtMj3Qf923AB" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">@https://youtu.be/5lSuYCma88w?si=AWODdtMj3Qf923AB</a></li>
+            <li><strong>Mark Wildman</strong>: Highly recommended for swing technique and programming concepts <a href="https://www.youtube.com/@MarkWildman" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">https://www.youtube.com/@MarkWildman</a></li>
+            <li><strong>StrongFirst</strong>: Official channel with technique breakdowns and programming advice <a href="https://www.youtube.com/@BeStrongFirst" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">https://www.youtube.com/@BeStrongFirst</a></li>
           </ul>
 
           <h4>Recommended Reading:</h4>
           <ul>
-            <li>&ldquo;Kettlebell Simple &amp; Sinister&rdquo; by Pavel Tsatsouline</li>
-            <li>&ldquo;Enter the Kettlebell&rdquo; by Pavel Tsatsouline</li>
-            <li>&ldquo;Return of the Kettlebell&rdquo; by Pavel Tsatsouline</li>
+            <li>&ldquo;Kettlebell Simple &amp; Sinister&rdquo; by Pavel Tsatsouline <a href="https://www.goodreads.com/book/show/18995451-kettlebell-simple-sinister" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">@https://www.goodreads.com/book/show/18995451-kettlebell-simple-sinister</a></li>
+            <li>&ldquo;Enter the Kettlebell&rdquo; by Pavel Tsatsouline <a href="https://www.goodreads.com/book/show/914363.Enter_the_Kettlebell_" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">@https://www.goodreads.com/book/show/914363.Enter_the_Kettlebell_</a></li>
+            <li>&ldquo;Return of the Kettlebell&rdquo; by Pavel Tsatsouline <a href="https://www.goodreads.com/book/show/22054109-return-of-the-kettlebell" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">@https://www.goodreads.com/book/show/22054109-return-of-the-kettlebell</a></li>
           </ul>
 
           <h3>Professional Instruction</h3>

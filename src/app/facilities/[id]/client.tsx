@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { loadGoogleMaps } from "@/lib/googleMapsLoader";
 import { analytics } from "@/components/Analytics";
+import { generateFacilityDescription } from "@/lib/facilityDescriptions-simple";
 
 type Place = {
   name?: string;
@@ -11,6 +12,12 @@ type Place = {
   website?: string;
   opening_hours?: { weekday_text?: string[] };
   photos?: any[];
+  types?: string[];
+  rating?: number;
+  user_ratings_total?: number;
+  price_level?: number;
+  reviews?: any[];
+  vicinity?: string;
 };
 
 export default function Client({ id }: { id: string }) {
@@ -33,6 +40,12 @@ export default function Client({ id }: { id: string }) {
               "website",
               "photos",
               "opening_hours",
+              "types",
+              "rating",
+              "user_ratings_total",
+              "price_level",
+              "reviews",
+              "vicinity",
             ],
           },
           (result: any, status: any) => {
@@ -62,8 +75,28 @@ export default function Client({ id }: { id: string }) {
       {error && <p className="text-red-700">Failed to load details: {error}</p>}
       {place && (
         <>
-          <h1 className="text-3xl font-bold mb-2">{place.name || "Facility"}</h1>
-          <p className="text-neutral-600 mb-6">{place.formatted_address}</p>
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">{place.name || "Facility"}</h1>
+            <p className="text-neutral-600 mb-4">{place.formatted_address}</p>
+            
+            {/* Rating and basic info */}
+            <div className="flex items-center gap-4 mb-6">
+              {place.rating && (
+                <div className="flex items-center gap-1">
+                  <span className="text-yellow-500">★</span>
+                  <span className="font-medium">{place.rating}</span>
+                  {place.user_ratings_total && (
+                    <span className="text-gray-500">({place.user_ratings_total} reviews)</span>
+                  )}
+                </div>
+              )}
+              {place.price_level && (
+                <div className="text-green-600 font-medium">
+                  {'$'.repeat(place.price_level)} Price Level
+                </div>
+              )}
+            </div>
+          </div>
 
           {photoUrls.length > 0 && (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
@@ -73,6 +106,16 @@ export default function Client({ id }: { id: string }) {
               ))}
             </div>
           )}
+
+          {/* Rich Description */}
+          <div className="bg-gray-50 rounded-xl p-6 mb-8">
+            <div 
+              className="text-gray-700 leading-relaxed"
+              dangerouslySetInnerHTML={{ 
+                __html: generateFacilityDescription(place)
+              }}
+            />
+          </div>
 
           <section className="space-y-2">
             {place.formatted_phone_number && (

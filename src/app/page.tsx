@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/Skeleton";
 import { CategoryPills, type CategoryKey } from "@/components/CategoryPills";
 import { MapView } from "@/components/MapView";
 import { analytics } from "@/components/Analytics";
+import { generateShortDescription } from "@/lib/facilityDescriptions-simple";
 import Hero from "@/components/Hero";
 
 function HomeContent() {
@@ -180,10 +181,24 @@ function HomeContent() {
               const nameId = `facility-${v.id}`;
               return (
               <li key={v.id} className="card p-5 hover:shadow-sm transition-shadow bg-white">
-                <div className="flex items-start justify-between">
+                <div className="flex items-start justify-between mb-2">
                   <h3 id={nameId} className="font-semibold text-xl leading-tight">{v.name}</h3>
+                  {v.rating && (
+                    <div className="flex items-center gap-1 text-sm">
+                      <span className="text-yellow-500">★</span>
+                      <span className="font-medium">{v.rating}</span>
+                    </div>
+                  )}
                 </div>
-                <p className="text-sm text-neutral-600 mt-1">{v.address}</p>
+                <p className="text-sm text-neutral-600 mb-2">{v.address}</p>
+                <p className="text-sm text-gray-700 mb-3 leading-relaxed">
+                  {generateShortDescription({
+                    name: v.name,
+                    formatted_address: v.address,
+                    types: v.types,
+                    rating: v.rating
+                  })}
+                </p>
                 <div className="mt-3">
                   <Link
                     className="text-blue-600"

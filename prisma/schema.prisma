@@ -13,56 +13,65 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Venue {
-  id             String   @id @default(cuid())
-  name           String
-  address        String
-  city           String
-  state          String
-  postalCode     String?
-  country        String   @default("US")
-  latitude       Float?
-  longitude      Float?
-  capacity       Int?
-  genreFocus     String?
-  googlePlaceId  String?  @unique
-  phone          String?
-  website        String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+model PetService {
+  id                  String   @id @default(cuid())
+  name                String
+  address             String
+  city                String
+  state               String
+  postalCode          String?
+  country             String   @default("US")
+  latitude            Float?
+  longitude           Float?
+  serviceType         String   // vet, groomer, boarding, training, sitting
+  specialties         String[] // dog, cat, exotic, emergency
+  servicesOffered     String[] // grooming, boarding, surgery, training
+  priceRange          String?  // $, $$, $$$, $$$$
+  acceptsInsurance    Boolean  @default(false)
+  emergencyServices   Boolean  @default(false)
+  certifications      String[] // AKC, CCPDT, NAVTA, etc.
+  googlePlaceId       String?  @unique
+  phone               String?
+  website             String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
-  events         Event[]
-  reviews        Review[]
+  appointments        ServiceAppointment[]
+  reviews             Review[]
+
+  @@map("pet_services")
 }
 
-model Event {
-  id         String   @id @default(cuid())
-  venueId    String
-  artistName String
-  date       DateTime
-  ticketUrl  String?
-  minPrice   Float?
-  maxPrice   Float?
-  genre      String?
-  source     String   // ticketmaster | bandsintown
-  createdAt  DateTime @default(now())
+model ServiceAppointment {
+  id                 String   @id @default(cuid())
+  petServiceId       String
+  appointmentType    String
+  date               DateTime
+  estimatedDuration  Int?     // minutes
+  priceEstimate      Float?
+  notes              String?
+  source             String   @default("manual")
+  createdAt          DateTime @default(now())
 
-  venue      Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  petService         PetService @relation(fields: [petServiceId], references: [id], onDelete: Cascade)
 
-  @@index([venueId, date])
+  @@index([petServiceId, date])
+  @@map("service_appointments")
 }
 
 model Review {
-  id         String   @id @default(cuid())
-  venueId    String
-  rating     Int
-  reviewText String?
-  date       DateTime @default(now())
-  source     String?  // google | user
+  id           String     @id @default(cuid())
+  petServiceId String
+  rating       Int
+  reviewText   String?
+  date         DateTime   @default(now())
+  source       String?    // google | user
+  authorName   String?
+  verified     Boolean    @default(false)
 
-  venue      Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  petService   PetService @relation(fields: [petServiceId], references: [id], onDelete: Cascade)
 
-  @@index([venueId])
+  @@index([petServiceId])
 }
 
 model ApiCache {

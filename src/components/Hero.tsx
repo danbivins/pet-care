@@ -2,8 +2,8 @@
 import Image from "next/image";
 
 export default function Hero({
-  title = "Discover gyms, studios, and fitness centers",
-  subtitle = "Find the best fitness spots near you — gyms, yoga, CrossFit, pilates, martial arts and more.",
+  title = "Find Trusted Pet Care Services Near You",
+  subtitle = "Discover vetted veterinarians, groomers, trainers, and pet sitters in your local area. Compare services, read reviews, and book appointments with confidence.",
   children,
 }: {
   title?: string;
@@ -30,7 +30,7 @@ export default function Hero({
         <div className="relative h-full min-h-[300px] md:min-h-[520px]">
           <Image
             src="/hero.jpg"
-            alt="Person lifting weights in a gym"
+            alt="Happy pet owner with their dog at a veterinary clinic"
             fill
             priority
             sizes="(max-width: 768px) 100vw, 50vw"

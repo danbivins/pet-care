@@ -1,17 +1,14 @@
 "use client";
 import clsx from "clsx";
-import { Dumbbell, Activity, Shield, Music, Hand, Mountain, Waves, Leaf, Sparkles } from "lucide-react";
+import { Heart, Scissors, Home, GraduationCap, User, AlertTriangle } from "lucide-react";
 
 const CATEGORIES = [
-  { key: "gym", label: "Gym", Icon: Dumbbell },
-  { key: "yoga", label: "Yoga", Icon: Leaf },
-  { key: "crossfit", label: "CrossFit", Icon: Activity },
-  { key: "pilates", label: "Pilates", Icon: Sparkles },
-  { key: "martial_arts", label: "Martial Arts", Icon: Shield },
-  { key: "dance", label: "Dance", Icon: Music },
-  { key: "boxing", label: "Boxing", Icon: Hand },
-  { key: "climbing", label: "Climbing", Icon: Mountain },
-  { key: "swimming", label: "Swimming", Icon: Waves },
+  { key: "veterinary", label: "Veterinarian", Icon: Heart },
+  { key: "grooming", label: "Grooming", Icon: Scissors },
+  { key: "boarding", label: "Boarding", Icon: Home },
+  { key: "training", label: "Training", Icon: GraduationCap },
+  { key: "sitting", label: "Pet Sitting", Icon: User },
+  { key: "emergency", label: "Emergency", Icon: AlertTriangle },
 ];
 
 export type CategoryKey = typeof CATEGORIES[number]["key"];

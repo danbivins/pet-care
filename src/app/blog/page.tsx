@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Fitness Blog - Expert Tips & Guides | GoFitLocal",
+  title: "Get Fit Blog - Expert Tips & Guides | GoFitLocal",
   description: "Discover expert fitness tips, gym selection guides, and wellness advice to help you achieve your fitness goals. From choosing the right gym to workout strategies.",
   openGraph: {
-    title: "Fitness Blog - Expert Tips & Guides | GoFitLocal",
+    title: "Get Fit Blog - Expert Tips & Guides | GoFitLocal",
     description: "Discover expert fitness tips, gym selection guides, and wellness advice to help you achieve your fitness goals.",
     type: "website",
   },
@@ -27,7 +27,7 @@ export default function BlogPage() {
     <main className="mx-auto max-w-4xl px-4 py-16">
       <div className="text-center mb-16">
         <h1 className="text-4xl sm:text-5xl font-extrabold text-black mb-6">
-          Fitness Blog
+          Get Fit Blog
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
           Expert tips, guides, and insights to help you achieve your fitness goals. 

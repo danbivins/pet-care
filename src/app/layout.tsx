@@ -41,9 +41,6 @@ export default function RootLayout({
                 <span className="font-extrabold text-xl tracking-tight">GoFitLocal</span>
               </Link>
               <nav className="hidden md:flex items-center gap-6 text-sm">
-                <Link href="/cities" className="hover:text-blue-600 transition-colors">
-                  Popular Cities
-                </Link>
                 <Link href="/blog" className="hover:text-blue-600 transition-colors">
                   Blog
                 </Link>

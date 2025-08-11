@@ -145,3 +145,13 @@ a { text-decoration: underline; }
   border-top: 1px solid #e5e7eb;
   margin: 2rem 0;
 }
+
+/* Global p tag color for better readability */
+p {
+  color: #2a2a2b;
+}
+
+/* Add cursor pointer to all buttons */
+button {
+  cursor: pointer;
+}

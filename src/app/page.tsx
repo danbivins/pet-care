@@ -23,6 +23,7 @@ function HomeContent() {
   const [hasPool, setHasPool] = useState(false);
   const [is24h, setIs24h] = useState(false);
   const [sort, setSort] = useState("rating");
+  const [validationErrors, setValidationErrors] = useState<{city?: string; state?: string}>({});
 
   // Initialize state from URL params on mount
   useEffect(() => {
@@ -46,12 +47,44 @@ function HomeContent() {
     if (sortParam) setSort(sortParam);
   }, [searchParams]);
 
+  function validateInputs() {
+    const errors: {city?: string; state?: string} = {};
+    
+    // Validate city - check for meaningful input
+    if (!city.trim()) {
+      errors.city = "Please enter a city name";
+    } else if (city.trim().length < 2) {
+      errors.city = "City name must be at least 2 characters";
+    } else if (!/^[a-zA-Z\s\-'\.]+$/.test(city.trim())) {
+      errors.city = "Please enter a valid city name";
+    }
+    
+    // Validate state - check for valid US state abbreviation or name
+    if (!state.trim()) {
+      errors.state = "Please enter a state";
+    } else if (state.trim().length === 2 && !/^[A-Za-z]{2}$/.test(state.trim())) {
+      errors.state = "Please enter a valid 2-letter state code (e.g., TX, CA)";
+    } else if (state.trim().length > 2 && !/^[a-zA-Z\s]+$/.test(state.trim())) {
+      errors.state = "Please enter a valid state name";
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
   async function search() {
-    if (!city && !state) return;
+    // Clear previous errors
+    setError(null);
+    
+    // Validate inputs
+    if (!validateInputs()) {
+      return;
+    }
+    
     setIsLoading(true);
     const params = new URLSearchParams();
-    if (city) params.set("city", city);
-    if (state) params.set("state", state);
+    if (city) params.set("city", city.trim());
+    if (state) params.set("state", state.trim());
     if (selectedCats.size > 0) params.set("categories", Array.from(selectedCats).join(","));
     if (openNow) params.set("openNow", "1");
     if (hasPool) params.set("hasPool", "1");
@@ -72,7 +105,7 @@ function HomeContent() {
         setFacilities(Array.isArray(data) ? data : []);
         
         // Track successful search
-        analytics.trackSearch(city, state, Array.from(selectedCats));
+        analytics.trackSearch(city.trim(), state.trim(), Array.from(selectedCats));
       }
     } catch {
       setError("Network error. Check API keys and server logs.");
@@ -80,18 +113,15 @@ function HomeContent() {
     setIsLoading(false);
   }
 
-  // Debounce search on input
-  const debounceKey = useMemo(
-    () => `${city}-${state}-${Array.from(selectedCats).sort().join("|")}-${openNow}-${hasPool}-${is24h}-${sort}`.trim(),
-    [city, state, selectedCats, openNow, hasPool, is24h, sort]
-  );
+  // Auto-search only when URL params are present (from direct navigation)
   useEffect(() => {
-    if (!city && !state) return;
-    setError(null);
-    const t = setTimeout(() => search(), 300);
-    return () => clearTimeout(t);
+    const cityParam = searchParams.get("city");
+    const stateParam = searchParams.get("state");
+    if ((cityParam || stateParam) && (city || state)) {
+      search();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounceKey]);
+  }, [searchParams]);
 
   return (
     <main className="min-h-screen bg-white text-black">
@@ -101,22 +131,48 @@ function HomeContent() {
             <label className="text-sm text-black">City</label>
             <input
               aria-label="City"
-              className="input focus:outline-brand"
+              className={`input focus:outline-brand ${validationErrors.city ? 'border-red-500 focus:outline-red-500' : ''}`}
               value={city}
-              onChange={(e) => setCity(e.target.value)}
+              onChange={(e) => {
+                setCity(e.target.value);
+                // Clear error when user starts typing
+                if (validationErrors.city) {
+                  setValidationErrors(prev => ({...prev, city: undefined}));
+                }
+              }}
               placeholder="Austin"
+              aria-invalid={!!validationErrors.city}
+              aria-describedby={validationErrors.city ? "city-error" : undefined}
             />
+            {validationErrors.city && (
+              <span id="city-error" className="text-red-600 text-sm mt-1" role="alert">
+                {validationErrors.city}
+              </span>
+            )}
           </div>
           <div className="flex flex-col">
             <label className="text-sm text-black">State</label>
             <input
               aria-label="State"
-              className="input w-24 focus:outline-brand"
+              className={`input w-24 focus:outline-brand ${validationErrors.state ? 'border-red-500 focus:outline-red-500' : ''}`}
               value={state}
-              onChange={(e) => setState(e.target.value)}
+              onChange={(e) => {
+                setState(e.target.value);
+                // Clear error when user starts typing
+                if (validationErrors.state) {
+                  setValidationErrors(prev => ({...prev, state: undefined}));
+                }
+              }}
               placeholder="TX"
               maxLength={2}
+              aria-invalid={!!validationErrors.state}
+              aria-describedby={validationErrors.state ? "state-error" : undefined}
             />
+            {validationErrors.state && (
+              <span id="state-error" className="text-red-600 text-sm mt-1" role="alert">
+                {validationErrors.state}
+              </span>
+            )}
           </div>
           <button
             onClick={search}

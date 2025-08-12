@@ -68,11 +68,16 @@ export async function GET(req: NextRequest) {
       latitude: place.geometry?.location?.lat,
       longitude: place.geometry?.location?.lng,
       rating: place.rating,
+      reviewCount: place.user_ratings_total,
       priceLevel: place.price_level,
       types: place.types || [],
       googlePlaceId: place.place_id,
       openNow: place.opening_hours?.open_now,
       photos: place.photos?.slice(0, 3) || [],
+      phone: place.formatted_phone_number,
+      website: place.website,
+      businessStatus: place.business_status,
+      openingHours: place.opening_hours?.weekday_text,
     }));
 
     return Response.json({

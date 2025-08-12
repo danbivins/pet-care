@@ -58,15 +58,16 @@ async function getPetServiceDetails(id: string) {
 }
 
 type Props = {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ id: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export async function generateMetadata(
-  { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  { params, searchParams: _searchParams }: Props,
+  _parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const service = await getPetServiceDetails(params.id);
+  const resolvedParams = await params;
+  const service = await getPetServiceDetails(resolvedParams.id);
   
   return {
     title: `${service.name} - Pet Care Services in Austin, TX`,
@@ -74,7 +75,7 @@ export async function generateMetadata(
     openGraph: {
       title: service.name,
       description: service.description,
-      type: 'business.business',
+      type: 'website',
     },
   };
 }
@@ -191,7 +192,7 @@ function Reviews({ reviews }: { reviews: any[] }) {
   );
 }
 
-async function PetServiceContent({ params }: Props) {
+async function PetServiceContent({ params }: { params: { id: string } }) {
   const service = await getPetServiceDetails(params.id);
   
   if (!service) {
@@ -363,5 +364,6 @@ async function PetServiceContent({ params }: Props) {
 }
 
 export default async function PetServicePage(props: Props) {
-  return <PetServiceContent {...props} />;
+  const resolvedParams = await props.params;
+  return <PetServiceContent params={resolvedParams} />;
 }

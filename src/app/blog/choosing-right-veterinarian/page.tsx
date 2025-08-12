@@ -64,9 +64,9 @@ export default function ChoosingVeterinarianArticle() {
           </h1>
           
           <p className="text-xl text-gray-600 leading-relaxed">
-            Choosing the right veterinarian is one of the most important decisions you'll make as a pet owner. 
+            Choosing the right veterinarian is one of the most important decisions you&apos;ll make as a pet owner. 
             Your vet will be your partner in keeping your furry family member healthy, happy, and comfortable 
-            throughout their life. Here's your complete guide to finding the perfect veterinary care for your pet.
+            throughout their life. Here&apos;s your complete guide to finding the perfect veterinary care for your pet.
           </p>
         </header>
 
@@ -74,7 +74,7 @@ export default function ChoosingVeterinarianArticle() {
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Start Your Search Early</h2>
             <p>
-              Don't wait until your pet needs medical attention to start looking for a veterinarian. Begin your search 
+              Don&apos;t wait until your pet needs medical attention to start looking for a veterinarian. Begin your search 
               when you first adopt your pet, or even before. This gives you time to research options, schedule 
               meet-and-greet appointments, and make an informed decision without the pressure of a medical emergency.
             </p>
@@ -85,13 +85,13 @@ export default function ChoosingVeterinarianArticle() {
             
             <h3 className="text-xl font-semibold text-gray-800 mb-3">Location and Convenience</h3>
             <p>
-              Choose a veterinary clinic that's reasonably close to your home. In emergencies, every minute counts, 
-              and you don't want to spend precious time traveling across town. Additionally, convenient location 
+              Choose a veterinary clinic that&apos;s reasonably close to your home. In emergencies, every minute counts, 
+              and you don&apos;t want to spend precious time traveling across town. Additionally, convenient location 
               makes it easier to keep up with routine appointments and preventive care.
             </p>
 
             <h3 className="text-xl font-semibold text-gray-800 mb-3 mt-6">Services Offered</h3>
-            <p>Consider what services you'll need both now and in the future:</p>
+            <p>Consider what services you&apos;ll need both now and in the future:</p>
             <ul className="list-disc pl-6 space-y-2 mt-3">
               <li><strong>Routine Care:</strong> Wellness exams, vaccinations, dental cleanings</li>
               <li><strong>Emergency Services:</strong> After-hours care or emergency referral protocols</li>
@@ -115,7 +115,7 @@ export default function ChoosingVeterinarianArticle() {
             </p>
 
             <blockquote className="border-l-4 border-blue-500 pl-6 py-4 my-6 bg-blue-50 italic text-lg">
-              "What are your emergency protocols? Do you handle after-hours emergencies or refer to another clinic?"
+              &quot;What are your emergency protocols? Do you handle after-hours emergencies or refer to another clinic?&quot;
             </blockquote>
 
             <ul className="list-disc pl-6 space-y-2">
@@ -142,10 +142,10 @@ export default function ChoosingVeterinarianArticle() {
 
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Building a Relationship</h2>
-            <p>Once you've chosen a veterinarian, focus on building a strong relationship:</p>
+            <p>Once you&apos;ve chosen a veterinarian, focus on building a strong relationship:</p>
 
             <ul className="list-disc pl-6 space-y-2 mt-3">
-              <li>Keep detailed records of your pet's health history</li>
+              <li>Keep detailed records of your pet&apos;s health history</li>
               <li>Ask questions during appointments</li>
               <li>Follow through with recommended treatments and preventive care</li>
               <li>Communicate openly about your concerns and observations</li>
@@ -154,11 +154,11 @@ export default function ChoosingVeterinarianArticle() {
 
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">When to Consider Switching Vets</h2>
-            <p>Sometimes, despite your best efforts, a veterinary relationship doesn't work out. Consider switching if:</p>
+            <p>Sometimes, despite your best efforts, a veterinary relationship doesn&apos;t work out. Consider switching if:</p>
 
             <ul className="list-disc pl-6 space-y-2 mt-3">
               <li>You consistently feel rushed during appointments</li>
-              <li>Your concerns aren't taken seriously</li>
+              <li>Your concerns aren&apos;t taken seriously</li>
               <li>Treatment recommendations seem excessive or unexplained</li>
               <li>The clinic is frequently understaffed or disorganized</li>
               <li>Your pet seems stressed or fearful during visits</li>
@@ -171,7 +171,7 @@ export default function ChoosingVeterinarianArticle() {
             </h3>
             <p className="text-blue-800">
               Many veterinary clinics offer new client discounts or wellness packages. Ask about these options 
-              during your initial visit to get the best value for your pet's care.
+              during your initial visit to get the best value for your pet&apos;s care.
             </p>
           </div>
 
@@ -180,7 +180,7 @@ export default function ChoosingVeterinarianArticle() {
             <p>
               Ready to start your search? Use our veterinarian finder to explore qualified vets in your area, 
               complete with reviews, services offered, and contact information. You can filter by specialties, 
-              hours, and location to find the perfect match for your pet's needs.
+              hours, and location to find the perfect match for your pet&apos;s needs.
             </p>
           </section>
 

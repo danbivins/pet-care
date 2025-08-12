@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
       .filter(Boolean);
     const openNow = searchParams.get("openNow") === "1";
     const emergency = searchParams.get("emergency") === "1";
-    const acceptsInsurance = searchParams.get("acceptsInsurance") === "1";
+    // const acceptsInsurance = searchParams.get("acceptsInsurance") === "1";
     const sort = searchParams.get("sort") || "rating"; // rating | distance
 
     if (!city && !state) {

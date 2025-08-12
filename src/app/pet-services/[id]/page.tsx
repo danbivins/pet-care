@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Heart, Clock, Phone, Globe, MapPin, Star, Shield, AlertTriangle } from "lucide-react";
@@ -55,12 +56,14 @@ async function getPetServiceDetails(id: string) {
   return mockService;
 }
 
-interface PageProps {
+type Props = {
   params: { id: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata(
+  { params, searchParams }: Props,
+): Promise<Metadata> {
   const service = await getPetServiceDetails(params.id);
   
   return {
@@ -186,7 +189,7 @@ function Reviews({ reviews }: { reviews: any[] }) {
   );
 }
 
-async function PetServiceContent({ params }: PageProps) {
+async function PetServiceContent({ params }: Props) {
   const service = await getPetServiceDetails(params.id);
   
   if (!service) {
@@ -357,6 +360,6 @@ async function PetServiceContent({ params }: PageProps) {
   );
 }
 
-export default async function PetServicePage(props: PageProps) {
+export default async function PetServicePage(props: Props) {
   return <PetServiceContent params={props.params} />;
 }

@@ -37,6 +37,19 @@ export default function RootLayout({
         {/* Critical CSS and fonts */}
         <link rel="preload" href="/hero.jpg" as="image" />
         
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=G-XZ0FK0DZ9M`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XZ0FK0DZ9M');
+          `}
+        </Script>
+        
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}

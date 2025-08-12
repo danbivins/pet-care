@@ -56,13 +56,14 @@ async function getPetServiceDetails(id: string) {
 }
 
 interface PetServicePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: PetServicePageProps) {
-  const service = await getPetServiceDetails(params.id);
+  const { id } = await params;
+  const service = await getPetServiceDetails(id);
   
   return {
     title: `${service.name} - Pet Care Services in Austin, TX`,
@@ -188,7 +189,8 @@ function Reviews({ reviews }: { reviews: any[] }) {
 }
 
 async function PetServiceContent({ params }: PetServicePageProps) {
-  const service = await getPetServiceDetails(params.id);
+  const { id } = await params;
+  const service = await getPetServiceDetails(id);
   
   if (!service) {
     notFound();

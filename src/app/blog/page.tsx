@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Pet Care Resources & Tips | PetCareLocal",
+  title: "Pet Care Resources & Tips | LocalPetGuide",
   description: "Expert advice, local insights, and practical tips to help you provide the best care for your furry, feathered, or scaled family members.",
   openGraph: {
-    title: "Pet Care Resources & Tips | PetCareLocal",
+    title: "Pet Care Resources & Tips | LocalPetGuide",
     description: "Expert advice and practical tips for pet owners to find the best veterinary care, grooming, and pet services.",
     type: "website",
   },

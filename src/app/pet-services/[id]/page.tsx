@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Heart, Clock, Phone, Globe, MapPin, Star, Shield, AlertTriangle } from "lucide-react";
@@ -56,16 +55,13 @@ async function getPetServiceDetails(id: string) {
   return mockService;
 }
 
-interface PetServicePageProps {
-  params: {
-    id: string;
-  };
+interface PageProps {
+  params: { id: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-export async function generateMetadata({ params }: PetServicePageProps) {
-  const { id } = params;
-  const service = await getPetServiceDetails(id);
+export async function generateMetadata({ params }: PageProps) {
+  const service = await getPetServiceDetails(params.id);
   
   return {
     title: `${service.name} - Pet Care Services in Austin, TX`,
@@ -190,9 +186,8 @@ function Reviews({ reviews }: { reviews: any[] }) {
   );
 }
 
-async function PetServiceContent({ params }: PetServicePageProps) {
-  const { id } = params;
-  const service = await getPetServiceDetails(id);
+async function PetServiceContent({ params }: PageProps) {
+  const service = await getPetServiceDetails(params.id);
   
   if (!service) {
     notFound();
@@ -362,6 +357,6 @@ async function PetServiceContent({ params }: PetServicePageProps) {
   );
 }
 
-export default async function PetServicePage({ params }: PetServicePageProps) {
-  return <PetServiceContent params={params} />;
+export default async function PetServicePage(props: PageProps) {
+  return <PetServiceContent params={props.params} />;
 }

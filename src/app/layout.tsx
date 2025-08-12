@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from 'next/script';
-import { Analytics } from "@vercel/analytics/react";
+// Analytics imports removed - using Google Analytics only
 import { GoogleAnalytics } from "@/components/Analytics";
 import { defaultMetadata, websiteJsonLd } from "@/lib/seo";
 import Providers from "./providers";
@@ -93,7 +93,6 @@ export default function RootLayout({
           </footer>
         </Providers>
         <GoogleAnalytics />
-        <Analytics />
       </body>
     </html>
   );

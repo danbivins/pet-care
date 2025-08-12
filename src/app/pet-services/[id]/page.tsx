@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Heart, Clock, Phone, Globe, MapPin, Star, Shield, AlertTriangle } from "lucide-react";
+import { PetServiceSchema } from "@/components/PetServiceSchema";
 
 // Mock function to get pet service details - in a real app this would fetch from your database
 async function getPetServiceDetails(id: string) {
@@ -197,7 +198,7 @@ async function PetServiceContent({ params }: PetServicePageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-white">
+    <>
       {/* Breadcrumbs */}
       <nav className="bg-gray-50 px-4 py-3" aria-label="Breadcrumb">
         <div className="mx-auto max-w-6xl">
@@ -355,36 +356,8 @@ async function PetServiceContent({ params }: PetServicePageProps) {
       </div>
 
       {/* Schema Markup */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            "@id": `#${service.serviceType}`,
-            "name": service.name,
-            "telephone": service.phone,
-            "url": service.website,
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": service.address.split(',')[0],
-              "addressLocality": "Austin",
-              "addressRegion": "TX",
-              "postalCode": "78701"
-            },
-            "openingHours": Object.entries(service.hours).map(([day, hours]) => 
-              hours !== "Closed" ? `${day.slice(0,2).toUpperCase()} ${hours}` : null
-            ).filter(Boolean),
-            "priceRange": service.priceRange,
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": service.rating,
-              "reviewCount": service.reviewCount
-            }
-          })
-        }}
-      />
-    </main>
+      <PetServiceSchema service={service} />
+    </>
   );
 }
 

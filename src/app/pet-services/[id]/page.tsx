@@ -57,13 +57,14 @@ async function getPetServiceDetails(id: string) {
 }
 
 interface PetServicePageProps {
-  params: Promise<{
+  params: {
     id: string;
-  }>;
+  };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata({ params }: PetServicePageProps) {
-  const { id } = await params;
+  const { id } = params;
   const service = await getPetServiceDetails(id);
   
   return {
@@ -190,7 +191,7 @@ function Reviews({ reviews }: { reviews: any[] }) {
 }
 
 async function PetServiceContent({ params }: PetServicePageProps) {
-  const { id } = await params;
+  const { id } = params;
   const service = await getPetServiceDetails(id);
   
   if (!service) {
@@ -361,14 +362,6 @@ async function PetServiceContent({ params }: PetServicePageProps) {
   );
 }
 
-export default function PetServicePage({ params }: PetServicePageProps) {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading pet service details...</div>
-      </div>
-    }>
-      <PetServiceContent params={params} />
-    </Suspense>
-  );
+export default async function PetServicePage({ params }: PetServicePageProps) {
+  return <PetServiceContent params={params} />;
 }

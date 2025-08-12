@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, Suspense, lazy } from "react";
+import { useEffect, useState, Suspense, lazy, useCallback } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/Skeleton";
@@ -71,7 +71,7 @@ function PetCareContent() {
     return Object.keys(errors).length === 0;
   }
 
-  async function search() {
+  const search = useCallback(async () => {
     setError(null);
     
     if (!validateInputs()) {
@@ -107,7 +107,7 @@ function PetCareContent() {
       setError("Network error. Please try again.");
     }
     setIsLoading(false);
-  }
+  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, router]);
 
   // Auto-search when URL params are present
   useEffect(() => {
@@ -117,7 +117,7 @@ function PetCareContent() {
     if (cityParam && stateParam && city === cityParam && state === stateParam) {
       search();
     }
-  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort]);
+  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, search, searchParams]);
 
   function getServiceTypeIcon(types: string[]) {
     if (types.includes('veterinary_care')) return '🏥';

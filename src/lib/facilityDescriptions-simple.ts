@@ -90,7 +90,6 @@ export function generateFacilityDescription(facility: SimpleFacilityData): strin
   // Generate rating text
   let ratingText = '';
   if (rating) {
-    const stars = '★'.repeat(Math.floor(rating));
     ratingText = `With a ${rating}/5 star rating${reviewCount ? ` from ${reviewCount} reviews` : ''}, this facility has earned the trust of the local fitness community.`;
   }
   

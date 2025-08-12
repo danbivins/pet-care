@@ -218,7 +218,7 @@ export default function ChoosingVeterinarianArticle() {
 
           <p className="text-lg">
             Remember, the best veterinarian for your pet is one who communicates well with you, provides compassionate care, 
-            and helps you feel confident about your pet's health decisions. Take your time, ask questions, and trust your 
+            and helps you feel confident about your pet&apos;s health decisions. Take your time, ask questions, and trust your 
             instincts when making this important choice.
           </p>
         </div>

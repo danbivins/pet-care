@@ -48,7 +48,7 @@ function PetCareContent() {
     if (sortParam) setSort(sortParam);
   }, [searchParams]);
 
-  function validateInputs() {
+  const validateInputs = useCallback(() => {
     const errors: {city?: string; state?: string} = {};
     
     if (!city.trim()) {
@@ -69,7 +69,7 @@ function PetCareContent() {
     
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
-  }
+  }, [city, state]);
 
   const search = useCallback(async () => {
     setError(null);
@@ -107,7 +107,7 @@ function PetCareContent() {
       setError("Network error. Please try again.");
     }
     setIsLoading(false);
-  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, router]);
+  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, router, validateInputs]);
 
   // Auto-search when URL params are present
   useEffect(() => {

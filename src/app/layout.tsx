@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Script from 'next/script';
 import { Analytics } from "@vercel/analytics/react";
 import { GoogleAnalytics } from "@/components/Analytics";
 import { defaultMetadata, websiteJsonLd } from "@/lib/seo";

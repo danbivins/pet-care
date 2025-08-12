@@ -26,16 +26,19 @@ export default function Hero({
           </div>
         </div>
 
-        {/* Right: hero image, kept separate so text stays readable */}
+        {/* Right: hero image, optimized for LCP */}
         <div className="relative h-full min-h-[300px] md:min-h-[520px]">
           <Image
             src="/hero.jpg"
             alt="Happy pet owner with their dog at a veterinary clinic"
             fill
             priority
+            fetchPriority="high"
             sizes="(max-width: 768px) 100vw, 50vw"
-            quality={72}
+            quality={85}
             className="object-cover object-center md:object-[70%]"
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
           />
           {/* No overlay/gradient on hero */}
         </div>

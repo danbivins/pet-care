@@ -11,11 +11,15 @@ import Providers from "./providers";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: 'swap', // Optimize font loading
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: 'swap', // Optimize font loading
+  preload: true,
 });
 
 export const metadata: Metadata = defaultMetadata;
@@ -36,7 +40,39 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://maps.googleapis.com" />
         
         {/* Critical CSS and fonts */}
-        <link rel="preload" href="/hero.jpg" as="image" />
+        <link rel="preload" href="/hero.jpg" as="image" fetchPriority="high" />
+        
+        {/* Inline critical CSS for above-the-fold content */}
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            /* Critical CSS for above-the-fold content */
+            body { margin: 0; font-family: var(--font-geist-sans), system-ui, sans-serif; }
+            .skip-link { position: absolute; top: -40px; left: 6px; z-index: 1000; }
+            .skip-link:focus { top: 6px; }
+            header { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(0,0,0,0.1); }
+            .max-w-6xl { max-width: 72rem; }
+            .px-4 { padding-left: 1rem; padding-right: 1rem; }
+            .h-14 { height: 3.5rem; }
+            .flex { display: flex; }
+            .items-center { align-items: center; }
+            .justify-between { justify-content: space-between; }
+            .gap-3 { gap: 0.75rem; }
+            .w-6 { width: 1.5rem; }
+            .h-6 { height: 1.5rem; }
+            .bg-black { background-color: #000; }
+            .rounded-sm { border-radius: 0.125rem; }
+            .font-extrabold { font-weight: 800; }
+            .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+            .tracking-tight { letter-spacing: -0.025em; }
+            .hidden { display: none; }
+            .md\\:flex { display: none; }
+            @media (min-width: 768px) { .md\\:flex { display: flex; } }
+            .gap-6 { gap: 1.5rem; }
+            .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+            .hover\\:text-blue-600:hover { color: #2563eb; }
+            .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+          `
+        }} />
         
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=G-XZ0FK0DZ9M`}

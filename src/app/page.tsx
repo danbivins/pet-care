@@ -2,7 +2,7 @@
 import { useEffect, useState, Suspense, lazy, useCallback } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Skeleton } from "@/components/Skeleton";
+import Skeleton from "@/components/Skeleton";
 import { CategoryPills, type CategoryKey } from "@/components/CategoryPills";
 import { analytics } from "@/components/Analytics";
 import Hero from "@/components/Hero";

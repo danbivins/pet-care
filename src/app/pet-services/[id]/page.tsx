@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Heart, Clock, Phone, Globe, MapPin, Star, Shield, AlertTriangle } from "lucide-react";
 import { PetServiceSchema } from "@/components/PetServiceSchema";
+import type { PageProps, GenerateMetadata } from "@/types/next";
 
 // Mock function to get pet service details - in a real app this would fetch from your database
 async function getPetServiceDetails(id: string) {
@@ -56,14 +57,9 @@ async function getPetServiceDetails(id: string) {
   return mockService;
 }
 
-type Props = {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+type Params = { id: string };
 
-export async function generateMetadata(
-  { params, searchParams }: Props,
-): Promise<Metadata> {
+export const generateMetadata: GenerateMetadata<Params> = async ({ params }) => {
   const service = await getPetServiceDetails(params.id);
   
   return {
@@ -75,7 +71,7 @@ export async function generateMetadata(
       type: 'business.business',
     },
   };
-}
+};
 
 function ServiceBadges({ service }: { service: any }) {
   return (
@@ -189,7 +185,7 @@ function Reviews({ reviews }: { reviews: any[] }) {
   );
 }
 
-async function PetServiceContent({ params }: Props) {
+async function PetServiceContent({ params }: PageProps<Params>) {
   const service = await getPetServiceDetails(params.id);
   
   if (!service) {
@@ -360,6 +356,6 @@ async function PetServiceContent({ params }: Props) {
   );
 }
 
-export default async function PetServicePage(props: Props) {
+export default async function PetServicePage(props: PageProps<Params>) {
   return <PetServiceContent params={props.params} />;
 }

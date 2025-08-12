@@ -184,7 +184,7 @@ function Reviews({ reviews }: { reviews: any[] }) {
   );
 }
 
-async function PetServiceContent({ params }: PageProps<Params>) {
+async function PetServiceContent({ params }: { params: Params }) {
   const service = await getPetServiceDetails(params.id);
   
   if (!service) {
@@ -355,6 +355,7 @@ async function PetServiceContent({ params }: PageProps<Params>) {
   );
 }
 
-export default async function PetServicePage(props: PageProps<Params>) {
-  return <PetServiceContent params={props.params} />;
+export default async function PetServicePage({ params }: { params: Promise<Params> }) {
+  const resolvedParams = await params;
+  return <PetServiceContent params={resolvedParams} />;
 }

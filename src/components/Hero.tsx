@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function Hero({
   title = "Find Trusted Pet Care Services Near You",
-  subtitle = "Discover vetted veterinarians, groomers, trainers, and pet sitters in your local area. Compare services, read reviews, and book appointments with confidence.",
+  subtitle = "Discover veterinarians, groomers, trainers, and pet sitters in your local area. Compare services, read reviews, and book appointments with confidence.",
   children,
 }: {
   title?: string;

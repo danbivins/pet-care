@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { createApiClients } from "@/lib/api/clients";
 import { getCached, setCached } from "@/lib/cache";
 
 export const revalidate = 0;
@@ -53,38 +52,33 @@ export async function GET(req: NextRequest) {
     const cached = await getCached(cacheKey);
     if (cached) return Response.json(cached);
 
-    const { googlePlaces } = createApiClients();
     let queries = buildQueries(city, state, categories).slice(0, 12);
     if (emergency) queries = queries.map((q) => `${q} emergency 24 hour`);
 
     const results: any[] = [];
     const ids = new Set<string>();
+    
+    // Use our internal places search API instead of calling Google directly
     await Promise.all(
       queries.map(async (q) => {
         try {
-          const { data } = await googlePlaces.get("/place/textsearch/json", {
-            params: { 
-              query: q, 
-              opennow: openNow ? true : undefined
-            },
-          });
-          const items = (data?.results || []) as any[];
+          const searchUrl = new URL('/api/places-search', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
+          searchUrl.searchParams.set('query', q);
+          if (openNow) searchUrl.searchParams.set('opennow', 'true');
+
+          const response = await fetch(searchUrl.toString());
+          if (!response.ok) {
+            console.warn(`Places search failed for query: ${q}`, response.status);
+            return;
+          }
+
+          const data = await response.json();
+          const items = data.results || [];
+          
           for (const r of items) {
-            if (!ids.has(r.place_id)) {
-              ids.add(r.place_id);
-              results.push({
-                id: r.place_id,
-                name: r.name,
-                address: r.formatted_address,
-                latitude: r.geometry?.location?.lat,
-                longitude: r.geometry?.location?.lng,
-                rating: r.rating,
-                priceLevel: r.price_level,
-                types: r.types || [],
-                googlePlaceId: r.place_id,
-                openNow: r.opening_hours?.open_now,
-                photos: r.photos?.slice(0, 3) || [],
-              });
+            if (!ids.has(r.googlePlaceId)) {
+              ids.add(r.googlePlaceId);
+              results.push(r);
             }
           }
         } catch (error) {

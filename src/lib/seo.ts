@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 // Base SEO configuration
 export const defaultMetadata: Metadata = {
-  title: "PetCareLocal — Find Trusted Pet Care Services Near You",
-  description: "Discover vetted veterinarians, groomers, trainers, and pet sitters in your local area. Compare services, read reviews, and book appointments with confidence.",
+  title: "LocalPetGuide — Find Pet Care Services Near You",
+  description: "Discover veterinarians, groomers, trainers, and pet sitters in your local area. Compare services, read reviews, and book appointments with confidence.",
   keywords: [
     "veterinarian",
     "pet care",
@@ -18,22 +18,22 @@ export const defaultMetadata: Metadata = {
     "local vet",
     "pet care directory"
   ],
-  authors: [{ name: "PetCareLocal" }],
-  creator: "PetCareLocal",
-  publisher: "PetCareLocal",
+  authors: [{ name: "LocalPetGuide" }],
+  creator: "LocalPetGuide",
+  publisher: "LocalPetGuide",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://petcarelocal.netlify.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://localpetguide.netlify.app"),
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "/",
-    siteName: "PetCareLocal",
-    title: "PetCareLocal — Find Trusted Pet Care Services Near You",
-    description: "Discover vetted veterinarians, groomers, trainers, and pet sitters in your local area. Compare services, read reviews, and book appointments.",
+    siteName: "LocalPetGuide",
+    title: "LocalPetGuide — Find Pet Care Services Near You",
+    description: "Discover veterinarians, groomers, trainers, and pet sitters in your local area. Compare services, read reviews, and book appointments.",
     images: [
       {
         url: "/hero.jpg",
@@ -45,8 +45,8 @@ export const defaultMetadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PetCareLocal — Find Trusted Pet Care Services Near You",
-    description: "Discover vetted veterinarians, groomers, trainers, and pet sitters in your local area. Compare services and read reviews.",
+    title: "LocalPetGuide — Find Pet Care Services Near You",
+    description: "Discover veterinarians, groomers, trainers, and pet sitters in your local area. Compare services and read reviews.",
     images: ["/hero.jpg"],
   },
   robots: {
@@ -64,7 +64,7 @@ export const defaultMetadata: Metadata = {
 
 // Generate SEO-friendly metadata for pet service pages
 export function generatePetServiceMetadata(serviceName: string, address: string, serviceType: string): Metadata {
-  const title = `${serviceName} - ${serviceType.charAt(0).toUpperCase() + serviceType.slice(1)} Services | PetCareLocal`;
+  const title = `${serviceName} - ${serviceType.charAt(0).toUpperCase() + serviceType.slice(1)} Services | LocalPetGuide`;
   const description = `Get details about ${serviceName} located at ${address}. View hours, services, reviews, and contact info for ${serviceType} care.`;
   
   return {
@@ -84,8 +84,8 @@ export function generatePetServiceMetadata(serviceName: string, address: string,
 
 // Generate metadata for city pages
 export function generateCityMetadata(city: string, state: string): Metadata {
-  const title = `Best Pet Care Services in ${city}, ${state} | PetCareLocal`;
-  const description = `Find trusted veterinarians, pet groomers, boarding facilities, and trainers in ${city}, ${state}. Read reviews, compare services, and book appointments.`;
+  const title = `Best Pet Care Services in ${city}, ${state} | LocalPetGuide`;
+  const description = `Find veterinarians, pet groomers, boarding facilities, and trainers in ${city}, ${state}. Read reviews, compare services, and book appointments.`;
   
   return {
     title,
@@ -105,7 +105,7 @@ export function generateCityMetadata(city: string, state: string): Metadata {
 // Generate metadata for service type pages
 export function generateServiceTypeMetadata(serviceType: string, city?: string, state?: string): Metadata {
   const location = city && state ? ` in ${city}, ${state}` : "";
-  const title = `Best ${serviceType} Services${location} | PetCareLocal`;
+  const title = `Best ${serviceType} Services${location} | LocalPetGuide`;
   const description = `Find top-rated ${serviceType} services${location}. Compare providers, read reviews, and book appointments with trusted professionals.`;
   
   return {
@@ -192,21 +192,21 @@ export function generatePetServiceJsonLd(service: {
 export const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "PetCareLocal",
+  name: "LocalPetGuide",
   description: "Find trusted pet care services near you",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://petcarelocal.netlify.app",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://localpetguide.netlify.app",
   potentialAction: {
     "@type": "SearchAction",
     target: {
       "@type": "EntryPoint",
-      urlTemplate: `${process.env.NEXT_PUBLIC_SITE_URL || "https://petcarelocal.netlify.app"}/?city={search_term_string}&state={search_term_string}`,
+      urlTemplate: `${process.env.NEXT_PUBLIC_SITE_URL || "https://localpetguide.netlify.app"}/?city={search_term_string}&state={search_term_string}`,
     },
     "query-input": "required name=search_term_string",
   },
   publisher: {
     "@type": "Organization",
-    name: "PetCareLocal",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://petcarelocal.netlify.app",
+    name: "LocalPetGuide",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://localpetguide.netlify.app",
   },
 };
 
@@ -227,12 +227,12 @@ export function generateArticleJsonLd(article: {
     description: article.description,
     author: {
       "@type": "Organization",
-      name: article.author || "PetCareLocal",
+      name: article.author || "LocalPetGuide",
     },
     publisher: {
       "@type": "Organization",
-      name: "PetCareLocal",
-      url: process.env.NEXT_PUBLIC_SITE_URL || "https://petcarelocal.netlify.app",
+      name: "LocalPetGuide",
+      url: process.env.NEXT_PUBLIC_SITE_URL || "https://localpetguide.netlify.app",
     },
     datePublished: article.publishedDate,
     dateModified: article.modifiedDate || article.publishedDate,

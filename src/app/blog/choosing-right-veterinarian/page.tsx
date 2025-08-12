@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Calendar, Clock, User, ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "How to Choose the Right Veterinarian for Your Pet | PetCareLocal",
+  title: "How to Choose the Right Veterinarian for Your Pet | LocalPetGuide",
   description: "Finding a trusted veterinarian is one of the most important decisions you'll make as a pet owner. Learn what to look for, questions to ask, and red flags to avoid.",
   openGraph: {
     title: "How to Choose the Right Veterinarian for Your Pet",
@@ -290,11 +290,11 @@ export default function ChoosingVeterinarianArticle() {
             "description": "Complete guide to finding the perfect veterinary care for your pet, including what to look for, questions to ask, and red flags to avoid.",
             "author": {
               "@type": "Organization",
-              "name": "PetCareLocal"
+              "name": "LocalPetGuide"
             },
             "publisher": {
               "@type": "Organization",
-              "name": "PetCareLocal"
+              "name": "LocalPetGuide"
             },
             "datePublished": "2024-08-15",
             "dateModified": "2024-08-15"

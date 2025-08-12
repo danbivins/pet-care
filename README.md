@@ -1,4 +1,4 @@
-# 🐾 PetCareLocal - Pet Care Service Directory
+# 🐾 LocalPetGuide - Pet Care Service Directory
 
 A comprehensive local pet care service directory built with Next.js, helping pet owners find trusted veterinarians, groomers, trainers, and pet sitters in their area.
 

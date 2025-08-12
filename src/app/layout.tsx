@@ -65,7 +65,7 @@ export default function RootLayout({
             <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
               <Link href="/" className="flex items-center gap-3">
                 <span className="inline-block w-6 h-6 bg-black rounded-sm" aria-hidden />
-                <span className="font-extrabold text-xl tracking-tight">PetCareLocal</span>
+                <span className="font-extrabold text-xl tracking-tight">LocalPetGuide</span>
               </Link>
               <nav className="hidden md:flex items-center gap-6 text-sm" role="navigation" aria-label="Main navigation">
                 <Link href="/blog" className="hover:text-blue-600 transition-colors">
@@ -82,7 +82,7 @@ export default function RootLayout({
           </main>
           <footer className="mt-16 border-t" role="contentinfo">
             <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-neutral-600 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <p>© {new Date().getFullYear()} PetCareLocal. All rights reserved.</p>
+              <p>© {new Date().getFullYear()} LocalPetGuide. All rights reserved.</p>
               <div className="flex gap-4">
                 <Link className="hover:underline" href="/cities">Popular Cities</Link>
                 <Link className="hover:underline" href="/blog">Blog</Link>

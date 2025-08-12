@@ -6,10 +6,10 @@ export const revalidate = 0;
 
 const CATEGORY_KEYWORDS: Record<string, string[]> = {
   veterinary: ["veterinarian", "vet clinic", "animal hospital", "veterinary clinic"],
-  grooming: ["pet grooming", "dog grooming", "cat grooming", "pet groomer"],
-  boarding: ["pet boarding", "dog boarding", "pet daycare", "dog daycare", "kennel"],
-  training: ["dog training", "pet training", "dog obedience", "puppy training"],
-  sitting: ["pet sitting", "dog walking", "pet care", "animal care"],
+  grooming: ["pet grooming", "dog grooming", "cat grooming", "pet groomer", "dog wash"],
+  boarding: ["pet boarding", "dog boarding", "pet daycare", "dog daycare", "kennel", "pet hotel"],
+  training: ["dog training", "pet training", "dog obedience", "puppy training", "dog trainer"],
+  sitting: ["pet sitting", "dog walking", "pet sitter", "dog walker", "pet care services", "pet nanny", "house sitting pets"],
   emergency: ["emergency vet", "24 hour vet", "emergency animal hospital"],
 };
 
@@ -65,8 +65,7 @@ export async function GET(req: NextRequest) {
           const { data } = await googlePlaces.get("/place/textsearch/json", {
             params: { 
               query: q, 
-              opennow: openNow ? true : undefined,
-              type: 'veterinary_care'
+              opennow: openNow ? true : undefined
             },
           });
           const items = (data?.results || []) as any[];

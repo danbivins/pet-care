@@ -109,5 +109,4 @@
   package = "@netlify/plugin-lighthouse"
   [plugins.inputs]
     output_path = "reports/lighthouse.html"
-    chrome_flags = "--headless --disable-gpu --no-sandbox --disable-dev-shm-usage"
 

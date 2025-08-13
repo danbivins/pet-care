@@ -130,9 +130,9 @@ function PetCareContent() {
       <Hero>
         <div className="flex gap-3 items-end flex-wrap">
           <div className="flex flex-col">
-            <label className="text-sm text-black">City</label>
+            <label className="text-sm text-black" for="cityInput">City</label>
             <input
-              aria-label="City"
+              id="cityInput"
               className={`input focus:outline-brand ${validationErrors.city ? 'border-red-500 focus:outline-red-500' : ''}`}
               value={city}
               onChange={(e) => {
@@ -141,7 +141,6 @@ function PetCareContent() {
                   setValidationErrors(prev => ({...prev, city: undefined}));
                 }
               }}
-              placeholder="Austin"
               aria-invalid={!!validationErrors.city}
               aria-describedby={validationErrors.city ? "city-error" : undefined}
             />
@@ -152,9 +151,8 @@ function PetCareContent() {
             )}
           </div>
           <div className="flex flex-col">
-            <label className="text-sm text-black">State</label>
+            <label className="text-sm text-black" for="stateInput">State</label>
             <input
-              aria-label="State"
               className={`input w-24 focus:outline-brand ${validationErrors.state ? 'border-red-500 focus:outline-red-500' : ''}`}
               value={state}
               onChange={(e) => {
@@ -163,7 +161,7 @@ function PetCareContent() {
                   setValidationErrors(prev => ({...prev, state: undefined}));
                 }
               }}
-              placeholder="TX"
+              id="stateInput"
               maxLength={2}
               aria-invalid={!!validationErrors.state}
               aria-describedby={validationErrors.state ? "state-error" : undefined}

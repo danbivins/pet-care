@@ -291,7 +291,7 @@ async function PetServiceContent({ params }: { params: { id: string } }) {
             <div className="sticky top-4 space-y-6">
               <ContactActions service={service} />
               
-              {/* Ad Zone - Sidebar Rectangle */}
+              {/* Ad Zone - Sidebar Rectangle
               <div className="ad-zone sidebar-rectangle" role="complementary" aria-label="Sponsored content">
                 <div className="bg-gray-100 border border-gray-200 rounded-lg p-6 text-center">
                   <p className="text-sm text-gray-500 mb-2">Advertisement</p>
@@ -300,6 +300,7 @@ async function PetServiceContent({ params }: { params: { id: string } }) {
                   </div>
                 </div>
               </div>
+               */}
 
               {/* Recommended Products */}
               <div className="bg-white border border-gray-200 rounded-lg p-6">

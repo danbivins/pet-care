@@ -21,36 +21,28 @@ const blogPosts = [
     category: "Veterinary Care"
   },
   {
-    slug: "professional-grooming-guide",
-    title: "Professional Pet Grooming: What to Expect and How to Prepare",
-    excerpt: "First time taking your pet to a professional groomer? Our comprehensive guide covers everything from preparation to what happens during the appointment.",
-    date: "2024-08-10",
-    readTime: "6 min read",
-    category: "Grooming"
-  },
-  {
-    slug: "emergency-vet-guide",
-    title: "When to Visit an Emergency Vet: A Pet Owner's Guide",
-    excerpt: "Learn to recognize the warning signs that require immediate veterinary attention and how to find emergency care in your area.",
-    date: "2024-08-08",
-    readTime: "5 min read",
-    category: "Emergency Care"
-  },
-  {
-    slug: "boarding-vs-pet-sitting",
+    slug: "pet-boarding-vs-in-home-pet-sitting",
     title: "Pet Boarding vs. In-Home Pet Sitting: Which is Right for You?",
     excerpt: "Compare the benefits and drawbacks of different pet care options when you travel. Make the best choice for your pet's comfort and safety.",
-    date: "2024-08-05",
+    date: "2024-08-10",
     readTime: "7 min read",
     category: "Pet Care"
   },
   {
-    slug: "finding-pet-trainer",
+    slug: "how-to-find-qualified-pet-trainer",
     title: "How to Find a Qualified Pet Trainer in Your Area",
     excerpt: "Training is essential for a well-behaved pet. Learn how to identify qualified trainers, what methods to look for, and red flags to avoid.",
-    date: "2024-08-01",
+    date: "2024-08-08",
     readTime: "6 min read",
     category: "Training"
+  },
+  {
+    slug: "how-to-groom-dog-at-home",
+    title: "How to Groom a Dog at Home",
+    excerpt: "Help your dog look and feel their best when you can't get to a local groomer this week.",
+    date: "2024-08-05",
+    readTime: "8 min read",
+    category: "Grooming"
   }
 ];
 
@@ -153,6 +145,7 @@ export default function BlogPage() {
           </div>
 
           {/* Newsletter Signup */}
+          {/* 
           <div className="bg-blue-50 rounded-lg border border-blue-200 p-6">
             <h3 className="text-lg font-semibold mb-3">Stay Updated</h3>
             <p className="text-sm text-gray-600 mb-4">
@@ -173,6 +166,7 @@ export default function BlogPage() {
               </button>
             </form>
           </div>
+          */}
 
           {/* Ad Zone - Sidebar Rectangle */}
           <div className="ad-zone sidebar-rectangle" role="complementary" aria-label="Sponsored content">
@@ -194,13 +188,13 @@ export default function BlogPage() {
                 </Link>
               </li>
               <li>
-                <Link href="/blog/emergency-vet-guide" className="text-sm text-blue-600 hover:underline">
-                  When to Visit an Emergency Vet
+                <Link href="/blog/pet-boarding-vs-in-home-pet-sitting" className="text-sm text-blue-600 hover:underline">
+                  Pet Boarding vs. In-Home Pet Sitting
                 </Link>
               </li>
               <li>
-                <Link href="/blog/professional-grooming-guide" className="text-sm text-blue-600 hover:underline">
-                  Professional Pet Grooming Guide
+                <Link href="/blog/how-to-find-qualified-pet-trainer" className="text-sm text-blue-600 hover:underline">
+                  How to Find a Qualified Pet Trainer
                 </Link>
               </li>
             </ul>

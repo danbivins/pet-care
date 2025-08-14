@@ -196,6 +196,14 @@ a { text-decoration: underline; }
   margin: 1rem 0;
 }
 
+.logo {
+  background-color: #fac748;
+}
+
+.logo-name {
+  text-decoration: none;
+}
+
 /* Responsive ad zones */
 @media (min-width: 768px) {
   .ad-zone.header-leaderboard {

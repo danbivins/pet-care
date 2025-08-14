@@ -250,6 +250,7 @@ function PetCareContent() {
               <option value="rating">Rating</option>
               <option value="distance">Distance</option>
             </select>
+            {/* Map Button 
             <button
               className="px-3 py-1 rounded border bg-white hover:bg-neutral-50 no-underline"
               onClick={() => {
@@ -262,6 +263,7 @@ function PetCareContent() {
               Show map
             </button>
             <span id="map-button-description" className="sr-only">Open map view of pet services</span>
+             */}
           </div>
         )}
         {isLoading && (
@@ -273,13 +275,14 @@ function PetCareContent() {
         )}
         {!isLoading && petServices.length > 0 && (
           <>
-            {/* Map View */}
+            {/* Map View 
             {petServices.length > 0 && (
               <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
                 <h2 className="text-xl font-bold text-black mb-4">Map View</h2>
                 <MapView facilities={petServices} />
               </div>
             )}
+            */}
 
             {/* Results List */}
             <div>
@@ -339,7 +342,7 @@ function PetCareContent() {
             <p className="text-sm text-gray-500">Try adjusting your search criteria or location</p>
           </div>
         )}
-        {/* Full-screen map dialog */}
+        {/* Full-screen map dialog
         <dialog id="map-modal" className="backdrop:bg-black/40 rounded-lg p-0" aria-labelledby="map-modal-title">
           <div className="w-[90vw] h-[80vh] max-w-6xl bg-white rounded-lg overflow-hidden">
             <div className="flex justify-between items-center p-3 border-b">
@@ -357,6 +360,7 @@ function PetCareContent() {
             </div>
           </div>
         </dialog>
+         */}
       </section>
     </div>
   );

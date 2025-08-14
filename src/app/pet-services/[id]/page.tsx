@@ -302,7 +302,7 @@ async function PetServiceContent({ params }: { params: { id: string } }) {
               </div>
                */}
 
-              {/* Recommended Products */}
+              {/* Recommended Products
               <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold mb-4">Recommended Pet Supplies</h3>
                 <p className="text-sm text-gray-600 mb-4">
@@ -335,6 +335,7 @@ async function PetServiceContent({ params }: { params: { id: string } }) {
                   </div>
                 </div>
               </div>
+               */}
             </div>
           </div>
         </div>

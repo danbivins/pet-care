@@ -185,7 +185,7 @@ export default function BlogPage() {
           </div>
           */}
 
-          {/* Ad Zone - Sidebar Rectangle */}
+          {/* Ad Zone - Sidebar Rectangle
           <div className="ad-zone sidebar-rectangle" role="complementary" aria-label="Sponsored content">
             <div className="bg-gray-100 border border-gray-200 rounded-lg p-6 text-center">
               <p className="text-sm text-gray-500 mb-2">Advertisement</p>
@@ -194,6 +194,7 @@ export default function BlogPage() {
               </div>
             </div>
           </div>
+           */}
 
           {/* Popular Articles */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">

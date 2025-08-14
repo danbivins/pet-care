@@ -132,7 +132,7 @@ function PetCareContent() {
   return (
     <div className="min-h-screen bg-white text-black">
       <Hero>
-        <div className="flex gap-3 items-end flex-wrap mb-32">
+        <div className="flex gap-3 items-end flex-wrap mb-8">
           <div className="flex flex-col">
             <label className="text-sm text-black font-bold" htmlFor="cityInput">City</label>
             <input

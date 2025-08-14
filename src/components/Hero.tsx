@@ -16,7 +16,7 @@ export default function Hero({
         {/* Left: copy on clean gradient */}
         <div className="relative z-10 px-6 sm:px-10 py-10 text-black flex items-center">
           <div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-black" style={{ lineHeight: '52px' }}>
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-black">
             {title}
           </h1>
           <p className="mt-3 max-w-2xl text-black/80 text-base sm:text-lg">
@@ -30,7 +30,7 @@ export default function Hero({
         <div className="relative h-full min-h-[300px] md:min-h-[520px]">
           <Image
             src="/hero.jpg"
-            alt="Happy pet owner with their dog at a veterinary clinic"
+            alt="Cute, happy corgi puppy sitting against an orange background"
             fill
             priority
             fetchPriority="high"

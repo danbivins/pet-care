@@ -297,7 +297,12 @@ function PetCareContent() {
                         <span className="text-2xl" aria-hidden="true">
                           {getServiceTypeIcon(service.types)}
                         </span>
+                        <Link
+                        className="listing-result-title"
+                        href={`/pet-services/${encodeURIComponent(service.id)}`}
+                        >
                         <h3 id={nameId} className="font-semibold text-xl leading-tight">{service.name}</h3>
+                        </Link>
                       </div>
                       {service.rating && (
                         <div className="flex items-center gap-1 text-sm" aria-label={`Rating: ${service.rating} out of 5 stars`}>

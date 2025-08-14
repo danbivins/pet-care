@@ -2,7 +2,7 @@
 import Image from "next/image";
 
 export default function Hero({
-  title = "Find Trusted Pet Care Services Near You",
+  title = "Find Pet Care Services Near You",
   subtitle = "Discover veterinarians, groomers, trainers, and pet sitters in your local area. Compare services, read reviews, and book appointments with confidence.",
   children,
 }: {
@@ -16,7 +16,7 @@ export default function Hero({
         {/* Left: copy on clean gradient */}
         <div className="relative z-10 px-6 sm:px-10 py-10 text-black flex items-center">
           <div>
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-black" style={{ lineHeight: '62px' }}>
+          <h1 className="text-3xl sm:text-6xl font-extrabold tracking-tight text-black" style={{ lineHeight: '62px' }}>
             {title}
           </h1>
           <p className="mt-3 max-w-2xl text-black/80 text-base sm:text-lg">

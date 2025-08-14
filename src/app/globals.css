@@ -11,6 +11,9 @@
   --chip-1: #e0f2fe;
   --chip-2: #fff7ed;
   --chip-3: #ecfccb;
+  --chip-4: #e6e6e6;
+  --chip-5: #86BBD8;
+  --chip-6: #DDDBF1;
 }
 
 /* Critical CSS - load first */

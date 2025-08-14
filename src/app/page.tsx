@@ -1,14 +1,18 @@
 "use client";
-import { useEffect, useState, Suspense, lazy, useCallback } from "react";
-import Link from "next/link";
+import dynamic from 'next/dynamic';
+import { useCallback, useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Skeleton from "@/components/Skeleton";
 import { CategoryPills, type CategoryKey } from "@/components/CategoryPills";
-import { analytics } from "@/components/Analytics";
 import Hero from "@/components/Hero";
+import Skeleton from "@/components/Skeleton";
+import { analytics } from "@/components/Analytics";
+import Link from "next/link";
 
-// Lazy load heavy components
-const MapView = lazy(() => import("@/components/MapView").then(mod => ({ default: mod.MapView })));
+// Dynamic imports to reduce main thread work
+const MapView = dynamic(() => import("@/components/MapView").then(mod => ({ default: mod.MapView })), {
+  loading: () => <div className="h-96 bg-gray-100 rounded-lg animate-pulse" />,
+  ssr: false
+});
 
 function PetCareContent() {
   const router = useRouter();
@@ -19,7 +23,7 @@ function PetCareContent() {
   const [petServices, setPetServices] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCats, setSelectedCats] = useState<Set<CategoryKey>>(new Set());
+  const [selectedCats, setSelectedCats] = useState<Set<string>>(new Set());
   const [openNow, setOpenNow] = useState(false);
   const [emergency, setEmergency] = useState(false);
   const [acceptsInsurance, setAcceptsInsurance] = useState(false);
@@ -39,7 +43,7 @@ function PetCareContent() {
     if (cityParam) setCity(cityParam);
     if (stateParam) setState(stateParam);
     if (categoriesParam) {
-      const cats = categoriesParam.split(",") as CategoryKey[];
+      const cats = categoriesParam.split(",") as string[];
       setSelectedCats(new Set(cats));
     }
     if (openNowParam) setOpenNow(openNowParam === "1");
@@ -268,67 +272,71 @@ function PetCareContent() {
           </div>
         )}
         {!isLoading && petServices.length > 0 && (
-          <div>
-            <h2 className="text-2xl font-bold mb-6">Pet Care Services Found ({petServices.length})</h2>
-            <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {petServices.map((service) => {
-                const nameId = `service-${service.id}`;
-                return (
-                <li key={service.id} className="card p-5 hover:shadow-lg transition-shadow bg-white border border-gray-200 rounded-lg">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl" aria-hidden="true">
-                        {getServiceTypeIcon(service.types)}
-                      </span>
-                      <h3 id={nameId} className="font-semibold text-xl leading-tight">{service.name}</h3>
-                    </div>
-                    {service.rating && (
-                      <div className="flex items-center gap-1 text-sm" aria-label={`Rating: ${service.rating} out of 5 stars`}>
-                        <span className="text-yellow-500" aria-hidden="true">★</span>
-                        <span className="font-medium">{service.rating}</span>
+          <>
+            {/* Map View */}
+            {petServices.length > 0 && (
+              <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+                <h2 className="text-xl font-bold text-black mb-4">Map View</h2>
+                <MapView facilities={petServices} />
+              </div>
+            )}
+
+            {/* Results List */}
+            <div>
+              <h2 className="text-2xl font-bold mb-6">Pet Care Services Found ({petServices.length})</h2>
+              <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {petServices.map((service) => {
+                  const nameId = `service-${service.id}`;
+                  return (
+                  <li key={service.id} className="card p-5 hover:shadow-lg transition-shadow bg-white border border-gray-200 rounded-lg">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl" aria-hidden="true">
+                          {getServiceTypeIcon(service.types)}
+                        </span>
+                        <h3 id={nameId} className="font-semibold text-xl leading-tight">{service.name}</h3>
                       </div>
-                    )}
-                  </div>
-                  <address className="text-sm text-neutral-600 mb-3 not-italic">
-                    {service.address}
-                  </address>
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {service.types.slice(0, 3).map((type: string, index: number) => (
-                      <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                        {type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="mt-4 flex gap-2">
-                    <Link
-                      className="text-blue-600 hover:text-blue-800 font-medium"
-                      href={`/pet-services/${encodeURIComponent(service.id)}`}
-                      aria-describedby={nameId}
-                    >
-                      View details
-                    </Link>
-                    {service.openNow && (
-                      <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                        Open now
-                      </span>
-                    )}
-                  </div>
-                </li>
-              );})}
-            </ul>
-          </div>
+                      {service.rating && (
+                        <div className="flex items-center gap-1 text-sm" aria-label={`Rating: ${service.rating} out of 5 stars`}>
+                          <span className="text-yellow-500" aria-hidden="true">★</span>
+                          <span className="font-medium">{service.rating}</span>
+                        </div>
+                      )}
+                    </div>
+                    <address className="text-sm text-neutral-600 mb-3 not-italic">
+                      {service.address}
+                    </address>
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {service.types.slice(0, 3).map((type: string, index: number) => (
+                        <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                          {type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="mt-4 flex gap-2">
+                      <Link
+                        className="text-blue-600 hover:text-blue-800 font-medium"
+                        href={`/pet-services/${encodeURIComponent(service.id)}`}
+                        aria-describedby={nameId}
+                      >
+                        View details
+                      </Link>
+                      {service.openNow && (
+                        <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                          Open now
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                );})}
+              </ul>
+            </div>
+          </>
         )}
         {!isLoading && petServices.length === 0 && city && state && (
           <div className="text-center py-12">
             <p className="text-lg text-gray-600 mb-4">No pet services found in {city}, {state}</p>
             <p className="text-sm text-gray-500">Try adjusting your search criteria or location</p>
-          </div>
-        )}
-        {!isLoading && petServices.length > 0 && (
-          <div className="mt-12">
-            <Suspense fallback={<div className="h-96 bg-gray-100 rounded-lg animate-pulse" />}>
-              <MapView facilities={petServices} />
-            </Suspense>
           </div>
         )}
         {/* Full-screen map dialog */}

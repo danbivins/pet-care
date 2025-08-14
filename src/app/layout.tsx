@@ -120,7 +120,6 @@ export default function RootLayout({
             <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-neutral-600 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <p>© {new Date().getFullYear()} LocalPetGuide. All rights reserved.</p>
               <div className="flex gap-4">
-                <Link className="hover:underline" href="/cities">Popular Cities</Link>
                 <Link className="hover:underline" href="/blog">Blog</Link>
                 <Link className="hover:underline" href="/how-it-works">How It Works</Link>
                 <Link className="hover:underline" href="/legal">Legal & Sources</Link>

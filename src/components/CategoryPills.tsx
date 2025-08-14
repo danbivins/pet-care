@@ -20,7 +20,7 @@ export function CategoryPills({
   selected: Set<CategoryKey>;
   onToggle: (key: CategoryKey) => void;
 }) {
-  const chipBg = ["bg-[var(--chip-1)]", "bg-[var(--chip-2)]", "bg-[var(--chip-3)]"];
+  const chipBg = ["bg-[var(--chip-1)]", "bg-[var(--chip-2)]", "bg-[var(--chip-3)]", "bg-[var(--chip-4)]", "bg-[var(--chip-5)]", "bg-[var(--chip-6)]"];
   return (
     <div className="flex flex-wrap gap-2">
       {CATEGORIES.map((c, idx) => {

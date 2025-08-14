@@ -47,12 +47,10 @@ const blogPosts = [
 ];
 
 const categories = [
-  { name: "Veterinary Care", count: 12, href: "/blog/category/veterinary-care" },
-  { name: "Grooming", count: 8, href: "/blog/category/grooming" },
-  { name: "Training", count: 6, href: "/blog/category/training" },
-  { name: "Nutrition", count: 5, href: "/blog/category/nutrition" },
-  { name: "Emergency Care", count: 4, href: "/blog/category/emergency-care" },
-  { name: "Pet Care", count: 10, href: "/blog/category/pet-care" }
+  { name: "Veterinary Care", count: 1, href: "/blog/category/veterinary-care" },
+  { name: "Grooming", count: 1, href: "/blog/category/grooming" },
+  { name: "Training", count: 1, href: "/blog/category/training" },
+  { name: "Pet Care", count: 1, href: "/blog/category/pet-care" }
 ];
 
 export default function BlogPage() {
@@ -111,15 +109,34 @@ export default function BlogPage() {
             ))}
           </div>
 
-          {/* Pagination */}
-          <div className="mt-12 flex justify-center">
-            <nav className="flex items-center gap-2" aria-label="Pagination">
-              <span className="px-4 py-2 bg-blue-600 text-white rounded-lg">1</span>
-              <Link href="/blog?page=2" className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">2</Link>
-              <Link href="/blog?page=3" className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">3</Link>
-              <Link href="/blog?page=2" className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Next →</Link>
-            </nav>
-          </div>
+          {/* Pagination - Only show when there are more than 10 posts */}
+          {blogPosts.length > 10 && (
+            <div className="mt-12 flex justify-center">
+              <nav className="flex items-center gap-2" aria-label="Pagination">
+                {Array.from({ length: Math.ceil(blogPosts.length / 10) }, (_, i) => (
+                  <Link 
+                    key={i + 1}
+                    href={`/blog?page=${i + 1}`} 
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      i === 0 
+                        ? 'bg-blue-600 text-white' 
+                        : 'border border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    {i + 1}
+                  </Link>
+                ))}
+                {Math.ceil(blogPosts.length / 10) > 1 && (
+                  <Link 
+                    href="/blog?page=2" 
+                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  >
+                    Next →
+                  </Link>
+                )}
+              </nav>
+            </div>
+          )}
         </div>
 
         {/* Sidebar */}

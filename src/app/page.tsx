@@ -132,9 +132,9 @@ function PetCareContent() {
   return (
     <div className="min-h-screen bg-white text-black">
       <Hero>
-        <div className="flex gap-3 items-end flex-wrap">
+        <div className="flex gap-3 items-end flex-wrap mb-32">
           <div className="flex flex-col">
-            <label className="text-sm text-black" htmlFor="cityInput">City</label>
+            <label className="text-sm text-black font-bold" htmlFor="cityInput">City</label>
             <input
               id="cityInput"
               className={`input focus:outline-brand ${validationErrors.city ? 'border-red-500 focus:outline-red-500' : ''}`}
@@ -155,7 +155,7 @@ function PetCareContent() {
             )}
           </div>
           <div className="flex flex-col">
-            <label className="text-sm text-black" htmlFor="stateInput">State</label>
+            <label className="text-sm text-black font-bold" htmlFor="stateInput">State</label>
             <input
               className={`input w-24 focus:outline-brand ${validationErrors.state ? 'border-red-500 focus:outline-red-500' : ''}`}
               value={state}

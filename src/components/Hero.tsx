@@ -11,7 +11,7 @@ export default function Hero({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="relative mx-auto max-w-6xl mt-6 rounded-3xl overflow-hidden bg-[#fac748] min-h-[360px] md:min-h-[520px]">
+    <section className="relative mx-auto max-w-6xl mt-6 rounded-3xl overflow-hidden bg-[#FFEFD3] min-h-[360px] md:min-h-[520px]">
       <div className="relative grid md:grid-cols-2 items-stretch h-full">
         {/* Left: copy on clean gradient */}
         <div className="relative z-10 px-6 sm:px-10 py-10 text-black flex items-center">

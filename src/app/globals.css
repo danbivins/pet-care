@@ -204,6 +204,22 @@ a { text-decoration: underline; }
   text-decoration: none;
 }
 
+button.chip[aria-pressed="true"] {
+  border: 2px solid black;
+}
+
+li.card:hover {
+  background: #f8fbff;
+}
+
+.listing-header {
+  background: none;
+}
+
+.lucide.lucide-map-pin {
+  height: 26px;
+}
+
 /* Responsive ad zones */
 @media (min-width: 768px) {
   .ad-zone.header-leaderboard {

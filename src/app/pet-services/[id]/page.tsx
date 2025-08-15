@@ -136,7 +136,7 @@ function Reviews({ reviews }: { reviews: any[] }) {
       <div className="space-y-6">
         {reviews.map((review) => (
           <article key={review.id} className="bg-white border border-gray-200 rounded-lg p-6">
-            <header className="flex items-start justify-between mb-3 listing-header">
+            <header className="flex items-start justify-between mb-3 pb-8 listing-header">
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <div className="flex text-yellow-500" aria-label={`${review.rating} out of 5 stars`}>

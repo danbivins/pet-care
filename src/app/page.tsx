@@ -437,12 +437,18 @@ function PetCareContent() {
                         <h3 id={nameId} className="font-semibold text-xl leading-tight">{service.name}</h3>
                         </Link>
                       </div>
-                      {service.rating && (
+                      {service.rating && service.reviewCount ? (
+                        <div className="flex items-center gap-1 text-sm" aria-label={`Rating: ${service.rating} out of 5 stars from ${service.reviewCount} reviews`}>
+                          <span className="text-yellow-500" aria-hidden="true">★</span>
+                          <span className="font-medium">{service.rating}</span>
+                          <span className="text-gray-600">({service.reviewCount})</span>
+                        </div>
+                      ) : service.rating ? (
                         <div className="flex items-center gap-1 text-sm" aria-label={`Rating: ${service.rating} out of 5 stars`}>
                           <span className="text-yellow-500" aria-hidden="true">★</span>
                           <span className="font-medium">{service.rating}</span>
                         </div>
-                      )}
+                      ) : null}
                     </div>
                     <address className="text-sm text-neutral-600 mb-3 not-italic">
                       {service.address}

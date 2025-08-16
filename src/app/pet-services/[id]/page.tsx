@@ -207,11 +207,23 @@ async function PetServiceContent({ params }: { params: { id: string } }) {
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900 mb-2">{service.name}</h1>
                   <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <Star className="text-yellow-500 fill-current" size={16} />
-                      <span className="font-medium">{service.rating}</span>
-                      <span>({service.reviewCount} Google reviews)</span>
-                    </div>
+                    {service.rating && service.reviewCount ? (
+                      <div className="flex items-center gap-1">
+                        <Star className="text-yellow-500 fill-current" size={16} />
+                        <span className="font-medium">{service.rating}</span>
+                        <span>({service.reviewCount} Google reviews)</span>
+                      </div>
+                    ) : service.rating ? (
+                      <div className="flex items-center gap-1">
+                        <Star className="text-yellow-500 fill-current" size={16} />
+                        <span className="font-medium">{service.rating}</span>
+                        <span>(Google reviews)</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-500">No ratings yet</span>
+                      </div>
+                    )}
                     <span>•</span>
                     <span className="capitalize">{service.serviceType}</span>
                     <span>•</span>

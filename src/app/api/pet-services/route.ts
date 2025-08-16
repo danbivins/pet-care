@@ -65,7 +65,8 @@ export async function GET(req: NextRequest) {
         try {
           const searchUrl = new URL('/api/places-search', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
           searchUrl.searchParams.set('query', q);
-          if (openNow) searchUrl.searchParams.set('opennow', 'true');
+          // Note: opennow parameter is not supported by Google Places Text Search API
+          // We'll filter results after fetching
 
           const response = await fetch(searchUrl.toString());
           if (!response.ok) {
@@ -88,13 +89,19 @@ export async function GET(req: NextRequest) {
       })
     );
 
-    // Basic sort
-    if (sort === "rating") {
-      results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    // Filter by open now if requested (this is a post-filter since Google Places Text Search doesn't support opennow)
+    let filteredResults = results;
+    if (openNow) {
+      filteredResults = results.filter(r => r.openNow === true);
     }
 
-    await setCached(cacheKey, results, 3600); // Cache for 1 hour
-    return Response.json(results);
+    // Basic sort
+    if (sort === "rating") {
+      filteredResults.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    }
+
+    await setCached(cacheKey, filteredResults, 3600); // Cache for 1 hour
+    return Response.json(filteredResults);
   } catch (err: any) {
     console.error("/api/pet-services error", err);
     return Response.json({ error: "Server error", detail: String(err?.message || err) }, { status: 500 });

@@ -61,31 +61,24 @@ export async function GET(req: NextRequest) {
     }
 
     // Transform results to match our expected format
-    const results = (data.results || []).map((place: any) => {
-      // Debug logging for ratings
-      if (place.rating || place.user_ratings_total) {
-        console.log(`Place: ${place.name}, Rating: ${place.rating}, Reviews: ${place.user_ratings_total}`);
-      }
-      
-      return {
-        id: place.place_id,
-        name: place.name,
-        address: place.formatted_address || place.vicinity,
-        latitude: place.geometry?.location?.lat,
-        longitude: place.geometry?.location?.lng,
-        rating: place.rating,
-        reviewCount: place.user_ratings_total,
-        priceLevel: place.price_level,
-        types: place.types || [],
-        googlePlaceId: place.place_id,
-        openNow: place.opening_hours?.open_now,
-        photos: place.photos?.slice(0, 3) || [],
-        phone: place.formatted_phone_number,
-        website: place.website,
-        businessStatus: place.business_status,
-        openingHours: place.opening_hours?.weekday_text,
-      };
-    });
+    const results = (data.results || []).map((place: any) => ({
+      id: place.place_id,
+      name: place.name,
+      address: place.formatted_address || place.vicinity,
+      latitude: place.geometry?.location?.lat,
+      longitude: place.geometry?.location?.lng,
+      rating: place.rating,
+      reviewCount: place.user_ratings_total,
+      priceLevel: place.price_level,
+      types: place.types || [],
+      googlePlaceId: place.place_id,
+      openNow: place.opening_hours?.open_now,
+      photos: place.photos?.slice(0, 3) || [],
+      phone: place.formatted_phone_number,
+      website: place.website,
+      businessStatus: place.business_status,
+      openingHours: place.opening_hours?.weekday_text,
+    }));
 
     return Response.json({
       results: results,

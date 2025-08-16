@@ -43,6 +43,69 @@ function PetCareContent() {
 
   const selectedFilterCount = getSelectedFilterCount();
 
+  // Focus management for modal accessibility
+  useEffect(() => {
+    if (showFiltersModal) {
+      // Store the element that had focus before modal opened
+      const previouslyFocusedElement = document.activeElement as HTMLElement;
+      
+      // Focus the first focusable element in the modal
+      const modal = document.querySelector('[role="dialog"]') as HTMLElement;
+      const firstFocusableElement = modal?.querySelector('button, input, select, textarea, [tabindex]:not([tabindex="-1"])') as HTMLElement;
+      
+      if (firstFocusableElement) {
+        firstFocusableElement.focus();
+      }
+      
+      // Store for restoration when modal closes
+      return () => {
+        if (previouslyFocusedElement) {
+          previouslyFocusedElement.focus();
+        }
+      };
+    }
+  }, [showFiltersModal]);
+
+  // Keyboard trap for modal accessibility
+  useEffect(() => {
+    if (!showFiltersModal) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Tab') {
+        const modal = document.querySelector('[role="dialog"]') as HTMLElement;
+        if (!modal) return;
+
+        const focusableElements = modal.querySelectorAll(
+          'button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0] as HTMLElement;
+        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+        if (event.shiftKey) {
+          // Shift + Tab: going backwards
+          if (document.activeElement === firstElement) {
+            event.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          // Tab: going forwards
+          if (document.activeElement === lastElement) {
+            event.preventDefault();
+            firstElement.focus();
+          }
+        }
+      } else if (event.key === 'Escape') {
+        setShowFiltersModal(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [showFiltersModal]);
+
   // Function to remove individual filters
   const removeFilter = useCallback((type: string, value?: string) => {
     switch (type) {
@@ -182,6 +245,7 @@ function PetCareContent() {
               }}
               aria-invalid={!!validationErrors.city}
               aria-describedby={validationErrors.city ? "city-error" : undefined}
+              tabIndex={showFiltersModal ? -1 : 0}
             />
             {validationErrors.city && (
               <span id="city-error" className="text-red-600 text-sm mt-1" role="alert">
@@ -204,6 +268,7 @@ function PetCareContent() {
               maxLength={2}
               aria-invalid={!!validationErrors.state}
               aria-describedby={validationErrors.state ? "state-error" : undefined}
+              tabIndex={showFiltersModal ? -1 : 0}
             />
             {validationErrors.state && (
               <span id="state-error" className="text-red-600 text-sm mt-1" role="alert">
@@ -215,6 +280,7 @@ function PetCareContent() {
             onClick={search}
             className="h-12 px-6 rounded-xl bg-[#023e8a] hover:bg-[#032d66] text-white font-semibold shadow-sm"
             aria-describedby="search-description"
+            tabIndex={showFiltersModal ? -1 : 0}
           >
             Search Pet Services
           </button>
@@ -238,6 +304,7 @@ function PetCareContent() {
               value={sort} 
               onChange={(e) => setSort(e.target.value)}
               aria-label="Sort results"
+              tabIndex={showFiltersModal ? -1 : 0}
             >
               <option value="rating">Rating</option>
               <option value="distance">Distance</option>
@@ -248,6 +315,7 @@ function PetCareContent() {
               onClick={() => setShowFiltersModal(true)}
               className="px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-black font-medium flex items-center gap-2 transition-colors relative"
               aria-describedby="filters-button-description"
+              tabIndex={showFiltersModal ? -1 : 0}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -274,6 +342,7 @@ function PetCareContent() {
                         onClick={() => removeFilter('category', category)}
                         className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors"
                         aria-label={`Remove ${category} filter`}
+                        tabIndex={showFiltersModal ? -1 : 0}
                       >
                         {category.replace(/_/g, ' ')}
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -288,6 +357,7 @@ function PetCareContent() {
                         onClick={() => removeFilter('openNow')}
                         className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors"
                         aria-label="Remove open now filter"
+                        tabIndex={showFiltersModal ? -1 : 0}
                       >
                         Open now
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -301,6 +371,7 @@ function PetCareContent() {
                         onClick={() => removeFilter('emergency')}
                         className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors"
                         aria-label="Remove emergency services filter"
+                        tabIndex={showFiltersModal ? -1 : 0}
                       >
                         Emergency services
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -314,6 +385,7 @@ function PetCareContent() {
                         onClick={() => removeFilter('acceptsInsurance')}
                         className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors"
                         aria-label="Remove accepts insurance filter"
+                        tabIndex={showFiltersModal ? -1 : 0}
                       >
                         Accepts insurance
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -387,6 +459,7 @@ function PetCareContent() {
                         className="text-blue-600 hover:text-blue-800 font-medium"
                         href={`/pet-services/${encodeURIComponent(service.id)}`}
                         aria-describedby={nameId}
+                        tabIndex={showFiltersModal ? -1 : 0}
                       >
                         View details
                       </Link>
@@ -433,13 +506,19 @@ function PetCareContent() {
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
             onClick={() => setShowFiltersModal(false)}
+            role="presentation"
+            aria-hidden="true"
           >
             <div 
               className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="filter-modal-title"
+              aria-describedby="filter-modal-description"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-black">Refine your search</h2>
+                <h2 id="filter-modal-title" className="text-xl font-bold text-black">Refine your search</h2>
                 <button
                   onClick={() => setShowFiltersModal(false)}
                   className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -449,6 +528,10 @@ function PetCareContent() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
+              </div>
+              
+              <div id="filter-modal-description" className="sr-only">
+                Filter options for pet care services including service categories and amenities
               </div>
               
               <div className="space-y-6">

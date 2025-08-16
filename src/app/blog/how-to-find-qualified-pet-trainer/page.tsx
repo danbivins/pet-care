@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "How to Find a Qualified Pet Trainer in Your Area | LocalPetGuide",
+  title: "How to Find a Qualified Pet Trainer  Near Me | LocalPetGuide",
   description: "Training is essential for a well-behaved pet. Learn how to identify qualified trainers, what methods to look for, and red flags to avoid.",
   openGraph: {
-    title: "How to Find a Qualified Pet Trainer in Your Area",
+    title: "How to Find a Qualified Pet Trainer Near Me",
     description: "Training is essential for a well-behaved pet. Learn how to identify qualified trainers, what methods to look for, and red flags to avoid.",
     type: "article",
     publishedTime: "2024-08-08T00:00:00.000Z",

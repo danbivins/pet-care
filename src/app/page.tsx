@@ -222,17 +222,6 @@ function PetCareContent() {
             Search for pet care services in the specified city and state
           </div>
         </div>
-        <div className="mt-4">
-          <CategoryPills
-            selected={selectedCats}
-            onToggle={(key) => {
-              const next = new Set(selectedCats);
-              if (next.has(key)) next.delete(key);
-              else next.add(key);
-              setSelectedCats(next);
-            }}
-          />
-        </div>
       </Hero>
 
       <section className="mx-auto max-w-6xl px-4 pb-24 mt-12">
@@ -286,7 +275,7 @@ function PetCareContent() {
                         className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors"
                         aria-label={`Remove ${category} filter`}
                       >
-                        {category}
+                        {category.replace(/_/g, ' ')}
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>

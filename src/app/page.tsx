@@ -346,7 +346,7 @@ function PetCareContent() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-black">Filter Options</h2>
+                <h2 className="text-xl font-bold text-black">Refine your search</h2>
                 <button
                   onClick={() => setShowFiltersModal(false)}
                   className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -359,9 +359,9 @@ function PetCareContent() {
               </div>
               
               <div className="space-y-6">
-                {/* Service Categories */}
+                {/* Category Section */}
                 <div>
-                  <h3 className="font-semibold text-black mb-3">Service Categories</h3>
+                  <h3 className="font-semibold text-black mb-3">Category</h3>
                   <CategoryPills
                     selected={selectedCats}
                     onToggle={(key) => {
@@ -373,9 +373,9 @@ function PetCareContent() {
                   />
                 </div>
                 
-                {/* Additional Filters */}
+                {/* Amenity Section */}
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-black">Additional Filters</h3>
+                  <h3 className="font-semibold text-black">Amenity</h3>
                   
                   <label className="flex items-center gap-3">
                     <input 
@@ -409,26 +409,15 @@ function PetCareContent() {
                 </div>
               </div>
               
-              <div className="flex gap-3 mt-8">
-                <button
-                  onClick={() => {
-                    setSelectedCats(new Set());
-                    setOpenNow(false);
-                    setEmergency(false);
-                    setAcceptsInsurance(false);
-                  }}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                  Clear All
-                </button>
+              <div className="mt-8">
                 <button
                   onClick={() => {
                     setShowFiltersModal(false);
                     search(); // Re-run search with new filters
                   }}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors font-medium"
                 >
-                  Apply Filters
+                  Apply filters
                 </button>
               </div>
             </div>

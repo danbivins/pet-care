@@ -293,6 +293,16 @@ async function PetServiceContent({ params }: { params: { id: string } }) {
               </div>
             </section>
 
+            {/* Location */}
+            <section className="mb-8">
+              <h2 className="text-xl font-semibold mb-3">Location</h2>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <address className="text-gray-700 not-italic">
+                  {service.address}
+                </address>
+              </div>
+            </section>
+
             {service.reviews && service.reviews.length > 0 && (
               <Reviews reviews={service.reviews} />
             )}

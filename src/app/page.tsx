@@ -451,14 +451,26 @@ function PetCareContent() {
                       ) : null}
                     </div>
                     <address className="text-sm text-neutral-600 mb-3 not-italic">
-                      {service.address}
+                      {(() => {
+                        const addressParts = service.address.split(', ');
+                        if (addressParts.length >= 2) {
+                          // Extract city and state (last two parts)
+                          const city = addressParts[addressParts.length - 2];
+                          const state = addressParts[addressParts.length - 1];
+                          return `${city}, ${state}`;
+                        }
+                        return service.address;
+                      })()}
                     </address>
                     <div className="flex flex-wrap gap-1 mb-3">
-                      {service.types.slice(0, 3).map((type: string, index: number) => (
-                        <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                          {type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
-                        </span>
-                      ))}
+                      {service.types
+                        .filter((type: string) => !['point_of_interest', 'establishment'].includes(type))
+                        .slice(0, 3)
+                        .map((type: string, index: number) => (
+                          <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                            {type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                          </span>
+                        ))}
                     </div>
                     <div className="mt-4 flex gap-2">
                       <Link

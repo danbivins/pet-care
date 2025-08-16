@@ -29,6 +29,7 @@ function PetCareContent() {
   const [acceptsInsurance, setAcceptsInsurance] = useState(false);
   const [sort, setSort] = useState("rating");
   const [validationErrors, setValidationErrors] = useState<{city?: string; state?: string}>({});
+  const [showFiltersModal, setShowFiltersModal] = useState(false);
 
   // Initialize state from URL params on mount
   useEffect(() => {
@@ -198,38 +199,6 @@ function PetCareContent() {
             }}
           />
         </div>
-        <div className="mt-4 flex gap-4 items-center flex-wrap text-sm">
-          <label className="flex items-center gap-2">
-            <input 
-              type="checkbox" 
-              checked={openNow} 
-              onChange={(e) => setOpenNow(e.target.checked)}
-              aria-describedby="open-now-description" 
-            />
-            Open now
-            <span id="open-now-description" className="sr-only">Show only services currently open</span>
-          </label>
-          <label className="flex items-center gap-2">
-            <input 
-              type="checkbox" 
-              checked={emergency} 
-              onChange={(e) => setEmergency(e.target.checked)}
-              aria-describedby="emergency-description"
-            />
-            Emergency services
-            <span id="emergency-description" className="sr-only">Show services that offer emergency care</span>
-          </label>
-          <label className="flex items-center gap-2">
-            <input 
-              type="checkbox" 
-              checked={acceptsInsurance} 
-              onChange={(e) => setAcceptsInsurance(e.target.checked)}
-              aria-describedby="insurance-description"
-            />
-            Accepts insurance
-            <span id="insurance-description" className="sr-only">Show services that accept pet insurance</span>
-          </label>
-        </div>
       </Hero>
 
       <section className="mx-auto max-w-6xl px-4 pb-24 mt-12">
@@ -239,7 +208,7 @@ function PetCareContent() {
           </div>
         )}
         {!isLoading && petServices.length > 0 && (
-          <div className="mb-4 text-sm flex items-center gap-4">
+          <div className="mb-4 text-sm flex items-center gap-6">
             <label className="text-neutral-700">Sort by</label>
             <select 
               className="border rounded px-2 py-1" 
@@ -250,20 +219,19 @@ function PetCareContent() {
               <option value="rating">Rating</option>
               <option value="distance">Distance</option>
             </select>
-            {/* Map Button 
+            
+            {/* Filters Button */}
             <button
-              className="px-3 py-1 rounded border bg-white hover:bg-neutral-50 no-underline"
-              onClick={() => {
-                analytics.trackMapInteraction("open_modal");
-                const dialog = document.getElementById("map-modal") as HTMLDialogElement | null;
-                if (dialog) dialog.showModal();
-              }}
-              aria-describedby="map-button-description"
+              onClick={() => setShowFiltersModal(true)}
+              className="px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-black font-medium flex items-center gap-2 transition-colors"
+              aria-describedby="filters-button-description"
             >
-              Show map
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              Filters
             </button>
-            <span id="map-button-description" className="sr-only">Open map view of pet services</span>
-             */}
+            <span id="filters-button-description" className="sr-only">Open filter options to narrow search results</span>
           </div>
         )}
         {isLoading && (
@@ -366,6 +334,106 @@ function PetCareContent() {
           </div>
         </dialog>
          */}
+        
+        {/* Filter Modal */}
+        {showFiltersModal && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            onClick={() => setShowFiltersModal(false)}
+          >
+            <div 
+              className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-black">Filter Options</h2>
+                <button
+                  onClick={() => setShowFiltersModal(false)}
+                  className="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  aria-label="Close filter modal"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="space-y-6">
+                {/* Service Categories */}
+                <div>
+                  <h3 className="font-semibold text-black mb-3">Service Categories</h3>
+                  <CategoryPills
+                    selected={selectedCats}
+                    onToggle={(key) => {
+                      const next = new Set(selectedCats);
+                      if (next.has(key)) next.delete(key);
+                      else next.add(key);
+                      setSelectedCats(next);
+                    }}
+                  />
+                </div>
+                
+                {/* Additional Filters */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-black">Additional Filters</h3>
+                  
+                  <label className="flex items-center gap-3">
+                    <input 
+                      type="checkbox" 
+                      checked={openNow} 
+                      onChange={(e) => setOpenNow(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-black">Open now</span>
+                  </label>
+                  
+                  <label className="flex items-center gap-3">
+                    <input 
+                      type="checkbox" 
+                      checked={emergency} 
+                      onChange={(e) => setEmergency(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-black">Emergency services</span>
+                  </label>
+                  
+                  <label className="flex items-center gap-3">
+                    <input 
+                      type="checkbox" 
+                      checked={acceptsInsurance} 
+                      onChange={(e) => setAcceptsInsurance(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-black">Accepts insurance</span>
+                  </label>
+                </div>
+              </div>
+              
+              <div className="flex gap-3 mt-8">
+                <button
+                  onClick={() => {
+                    setSelectedCats(new Set());
+                    setOpenNow(false);
+                    setEmergency(false);
+                    setAcceptsInsurance(false);
+                  }}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Clear All
+                </button>
+                <button
+                  onClick={() => {
+                    setShowFiltersModal(false);
+                    search(); // Re-run search with new filters
+                  }}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                >
+                  Apply Filters
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );

@@ -7,8 +7,9 @@ const CATEGORY_KEYWORDS: Record<string, string[]> = {
   veterinary: ["veterinarian", "vet clinic", "animal hospital", "veterinary clinic"],
   grooming: ["pet grooming", "dog grooming", "cat grooming", "pet groomer", "dog wash"],
   boarding: ["pet boarding", "dog boarding", "pet daycare", "dog daycare", "kennel", "pet hotel"],
-  training: ["dog training", "pet training", "dog obedience", "puppy training", "dog trainer"],
-  sitting: ["pet sitting", "dog walking", "pet sitter", "dog walker", "pet care services", "pet nanny", "house sitting pets"],
+  pet_trainers: ["dog training", "pet training", "dog obedience", "puppy training", "dog trainer", "pet trainer", "behavioral training"],
+  pet_sitters: ["pet sitting", "pet sitter", "house sitting pets", "pet care services", "pet nanny"],
+  dog_walkers: ["dog walking", "dog walker", "pet walking", "dog walking service"],
   emergency: ["emergency vet", "24 hour vet", "emergency animal hospital"],
 };
 

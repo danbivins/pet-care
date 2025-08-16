@@ -31,6 +31,40 @@ function PetCareContent() {
   const [validationErrors, setValidationErrors] = useState<{city?: string; state?: string}>({});
   const [showFiltersModal, setShowFiltersModal] = useState(false);
 
+  // Calculate total selected filters
+  const getSelectedFilterCount = useCallback(() => {
+    let count = 0;
+    if (selectedCats.size > 0) count += selectedCats.size;
+    if (openNow) count += 1;
+    if (emergency) count += 1;
+    if (acceptsInsurance) count += 1;
+    return count;
+  }, [selectedCats, openNow, emergency, acceptsInsurance]);
+
+  const selectedFilterCount = getSelectedFilterCount();
+
+  // Function to remove individual filters
+  const removeFilter = useCallback((type: string, value?: string) => {
+    switch (type) {
+      case 'category':
+        if (value) {
+          const next = new Set(selectedCats);
+          next.delete(value);
+          setSelectedCats(next);
+        }
+        break;
+      case 'openNow':
+        setOpenNow(false);
+        break;
+      case 'emergency':
+        setEmergency(false);
+        break;
+      case 'acceptsInsurance':
+        setAcceptsInsurance(false);
+        break;
+    }
+  }, [selectedCats]);
+
   // Initialize state from URL params on mount
   useEffect(() => {
     const cityParam = searchParams.get("city");
@@ -223,15 +257,85 @@ function PetCareContent() {
             {/* Filters Button */}
             <button
               onClick={() => setShowFiltersModal(true)}
-              className="px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-black font-medium flex items-center gap-2 transition-colors"
+              className="px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-black font-medium flex items-center gap-2 transition-colors relative"
               aria-describedby="filters-button-description"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
               Filters
+              {selectedFilterCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-gray-800 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                  {selectedFilterCount}
+                </span>
+              )}
             </button>
             <span id="filters-button-description" className="sr-only">Open filter options to narrow search results</span>
+            
+            {/* Filter Chips - Show on desktop when ≤3 filters, always show number on mobile */}
+            {selectedFilterCount > 0 && (
+              <div className="hidden md:flex items-center gap-2 ml-4">
+                {/* Show individual chips only on desktop when ≤3 filters */}
+                {selectedFilterCount <= 3 && (
+                  <>
+                    {/* Category chips */}
+                    {Array.from(selectedCats).map((category) => (
+                      <button
+                        key={`category-${category}`}
+                        onClick={() => removeFilter('category', category)}
+                        className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors"
+                        aria-label={`Remove ${category} filter`}
+                      >
+                        {category}
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    ))}
+                    
+                    {/* Amenity chips */}
+                    {openNow && (
+                      <button
+                        onClick={() => removeFilter('openNow')}
+                        className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors"
+                        aria-label="Remove open now filter"
+                      >
+                        Open now
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    )}
+                    
+                    {emergency && (
+                      <button
+                        onClick={() => removeFilter('emergency')}
+                        className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors"
+                        aria-label="Remove emergency services filter"
+                      >
+                        Emergency services
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    )}
+                    
+                    {acceptsInsurance && (
+                      <button
+                        onClick={() => removeFilter('acceptsInsurance')}
+                        className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors"
+                        aria-label="Remove accepts insurance filter"
+                      >
+                        Accepts insurance
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
           </div>
         )}
         {isLoading && (

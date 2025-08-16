@@ -6,8 +6,9 @@ const CATEGORIES = [
   { key: "veterinary", label: "Veterinarian", Icon: Heart },
   { key: "grooming", label: "Grooming", Icon: Scissors },
   { key: "boarding", label: "Boarding", Icon: Home },
-  { key: "training", label: "Training", Icon: GraduationCap },
-  { key: "sitting", label: "Pet Sitting", Icon: User },
+  { key: "pet_trainers", label: "Pet Trainers", Icon: GraduationCap },
+  { key: "pet_sitters", label: "Pet Sitters", Icon: User },
+  { key: "dog_walkers", label: "Dog Walkers", Icon: User },
   { key: "emergency", label: "Emergency", Icon: AlertTriangle },
 ];
 

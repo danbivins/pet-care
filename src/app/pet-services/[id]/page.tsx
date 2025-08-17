@@ -241,6 +241,25 @@ async function PetServiceContent({ params }: { params: { id: string } }) {
               <ServiceBadges service={service} />
             </header>
 
+            {/* Photos */}
+            {service.photos && service.photos.length > 0 && (
+              <section className="mb-8">
+                <h2 className="text-xl font-semibold mb-3">Photos</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {service.photos.map((photo: any, index: number) => (
+                    <div key={index} className="aspect-square overflow-hidden rounded-lg">
+                      <img
+                        src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_MAPS_API_KEY}`}
+                        alt={`${service.name} photo ${index + 1}`}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {/* Description */}
             <section className="mb-8">
               <h2 className="text-xl font-semibold mb-3">About</h2>

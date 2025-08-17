@@ -13,6 +13,108 @@ const CATEGORY_KEYWORDS: Record<string, string[]> = {
   emergency: ["emergency vet", "24 hour vet", "emergency animal hospital"],
 };
 
+// Helper function to get coordinates for a city/state
+async function getCoordinatesForLocation(city: string, state: string): Promise<{ lat: number; lng: number } | null> {
+  try {
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_MAPS_API_KEY;
+    if (!apiKey) return null;
+
+    const geocodeUrl = "https://maps.googleapis.com/maps/api/geocode/json";
+    const params = new URLSearchParams({
+      address: `${city}, ${state}`,
+      key: apiKey
+    });
+
+    const response = await fetch(`${geocodeUrl}?${params.toString()}`);
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    if (data.status === "OK" && data.results?.[0]?.geometry?.location) {
+      return data.results[0].geometry.location;
+    }
+    return null;
+  } catch (error) {
+    console.error("Geocoding failed:", error);
+    return null;
+  }
+}
+
+// Helper function to map categories to Google Places business types
+function getBusinessTypesForCategories(categories: string[]): string[] {
+  const businessTypeMap: Record<string, string[]> = {
+    veterinary: ["veterinary_care"],
+    grooming: ["pet_store"],
+    boarding: ["lodging"],
+    pet_trainers: ["establishment"],
+    pet_sitters: ["establishment"],
+    dog_walkers: ["establishment"],
+    emergency: ["veterinary_care", "hospital"]
+  };
+
+  const types: string[] = [];
+  categories.forEach(cat => {
+    const mappedTypes = businessTypeMap[cat] || [];
+    types.push(...mappedTypes);
+  });
+
+  return [...new Set(types)]; // Remove duplicates
+}
+
+// Fallback to original text search method if nearby search fails
+async function fallbackTextSearch(city: string, state: string, categories: string[], emergency: boolean, openNow: boolean, sort: string) {
+  let queries = buildQueries(city, state, categories).slice(0, 6); // Reduced from 12 to 6
+  if (emergency) queries = queries.map((q) => `${q} emergency 24 hour`);
+
+  const results: any[] = [];
+  const ids = new Set<string>();
+  
+  // Use our internal places search API
+  await Promise.all(
+    queries.map(async (q) => {
+      try {
+        const searchUrl = new URL('/api/places-search', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
+        searchUrl.searchParams.set('query', q);
+
+        const response = await fetch(searchUrl.toString());
+        if (!response.ok) {
+          console.warn(`Places search failed for query: ${q}`, response.status);
+          return;
+        }
+
+        const data = await response.json();
+        const items = data.results || [];
+        
+        for (const r of items) {
+          if (!ids.has(r.googlePlaceId)) {
+            ids.add(r.googlePlaceId);
+            results.push(r);
+          }
+        }
+      } catch (error) {
+        console.warn(`Query failed: ${q}`, error);
+      }
+    })
+  );
+
+  // Apply filters
+  let filteredResults = results;
+  if (openNow) {
+    filteredResults = results.filter(r => r.openNow === true);
+  }
+
+  // Remove duplicates and limit results
+  const uniqueResults = filteredResults.filter((r: any, index: number, self: any[]) => 
+    index === self.findIndex((t: any) => t.googlePlaceId === r.googlePlaceId)
+  ).slice(0, 20);
+
+  // Sort results
+  if (sort === "rating") {
+    uniqueResults.sort((a: any, b: any) => (b.rating || 0) - (a.rating || 0));
+  }
+
+  return Response.json(uniqueResults);
+}
+
 function buildQueries(city: string, state: string, categories: string[]): string[] {
   const location = [city, state].filter(Boolean).join(", ");
   const list = categories.length > 0 ? categories : Object.keys(CATEGORY_KEYWORDS);
@@ -38,8 +140,7 @@ export async function GET(req: NextRequest) {
       .filter(Boolean);
     const openNow = searchParams.get("openNow") === "1";
     const emergency = searchParams.get("emergency") === "1";
-    // const acceptsInsurance = searchParams.get("acceptsInsurance") === "1";
-    const sort = searchParams.get("sort") || "rating"; // rating | distance
+    const sort = searchParams.get("sort") || "rating";
 
     if (!city && !state) {
       return Response.json({ error: "city or state is required" }, { status: 400 });
@@ -53,55 +154,65 @@ export async function GET(req: NextRequest) {
     const cached = await getCached(cacheKey);
     if (cached) return Response.json(cached);
 
-    let queries = buildQueries(city, state, categories).slice(0, 12);
-    if (emergency) queries = queries.map((q) => `${q} emergency 24 hour`);
-
-    const results: any[] = [];
-    const ids = new Set<string>();
+    // Use nearby search instead of multiple text searches - much faster!
+    const searchUrl = new URL('/api/places-search', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
     
-    // Use our internal places search API instead of calling Google directly
-    await Promise.all(
-      queries.map(async (q) => {
-        try {
-          const searchUrl = new URL('/api/places-search', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
-          searchUrl.searchParams.set('query', q);
-          // Note: opennow parameter is not supported by Google Places Text Search API
-          // We'll filter results after fetching
-
-          const response = await fetch(searchUrl.toString());
-          if (!response.ok) {
-            console.warn(`Places search failed for query: ${q}`, response.status);
-            return;
-          }
-
-          const data = await response.json();
-          const items = data.results || [];
-          
-          for (const r of items) {
-            if (!ids.has(r.googlePlaceId)) {
-              ids.add(r.googlePlaceId);
-              results.push(r);
-            }
-          }
-        } catch (error) {
-          console.warn(`Query failed: ${q}`, error);
-        }
-      })
-    );
-
-    // Filter by open now if requested (this is a post-filter since Google Places Text Search doesn't support opennow)
-    let filteredResults = results;
-    if (openNow) {
-      filteredResults = results.filter(r => r.openNow === true);
+    // Get coordinates for the city/state
+    const coordinates = await getCoordinatesForLocation(city, state);
+    if (!coordinates) {
+      return Response.json({ error: "Could not find coordinates for location" }, { status: 400 });
     }
 
-    // Basic sort
-    if (sort === "rating") {
-      filteredResults.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    // Use nearby search with coordinates - single API call instead of multiple text searches
+    searchUrl.searchParams.set('lat', coordinates.lat.toString());
+    searchUrl.searchParams.set('lng', coordinates.lng.toString());
+    searchUrl.searchParams.set('radius', '25000'); // 25km radius for comprehensive coverage
+    
+    // Add business type filters for better relevance
+    const businessTypes = getBusinessTypesForCategories(categories);
+    if (businessTypes.length > 0) {
+      searchUrl.searchParams.set('types', businessTypes.join(','));
     }
 
-    await setCached(cacheKey, filteredResults, 3600); // Cache for 1 hour
-    return Response.json(filteredResults);
+    try {
+      const response = await fetch(searchUrl.toString());
+      if (!response.ok) {
+        throw new Error(`Places search failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      let results = data.results || [];
+
+      // Apply filters
+      if (emergency) {
+        results = results.filter((r: any) => 
+          r.types?.includes('veterinary_care') || 
+          r.types?.includes('hospital') ||
+          r.name?.toLowerCase().includes('emergency')
+        );
+      }
+
+      if (openNow) {
+        results = results.filter((r: any) => r.openNow === true);
+      }
+
+      // Remove duplicates and limit results
+      const uniqueResults = results.filter((r: any, index: number, self: any[]) => 
+        index === self.findIndex((t: any) => t.googlePlaceId === r.googlePlaceId)
+      ).slice(0, 20); // Limit to 20 results for performance
+
+      // Sort results
+      if (sort === "rating") {
+        uniqueResults.sort((a: any, b: any) => (b.rating || 0) - (a.rating || 0));
+      }
+
+      await setCached(cacheKey, uniqueResults, 3600); // Cache for 1 hour
+      return Response.json(uniqueResults);
+    } catch (error) {
+      console.error("Nearby search failed, falling back to text search:", error);
+      // Fallback to original text search method if nearby search fails
+      return await fallbackTextSearch(city, state, categories, emergency, openNow, sort);
+    }
   } catch (err: any) {
     console.error("/api/pet-services error", err);
     return Response.json({ error: "Server error", detail: String(err?.message || err) }, { status: 500 });

@@ -1,35 +1,30 @@
 "use client";
 import dynamic from 'next/dynamic';
-import { useCallback, useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { CategoryPills, type CategoryKey } from "@/components/CategoryPills";
-import Hero from "@/components/Hero";
-import Skeleton from "@/components/Skeleton";
-import { analytics } from "@/components/Analytics";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Hero from "@/components/Hero";
+import { CategoryPills } from "@/components/CategoryPills";
+import Skeleton from "@/components/Skeleton";
 
-// Dynamic imports to reduce main thread work
 const MapView = dynamic(() => import("@/components/MapView").then(mod => ({ default: mod.MapView })), {
-  loading: () => <div className="h-96 bg-gray-100 rounded-lg animate-pulse" />,
   ssr: false
 });
 
 function PetCareContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const [petServices, setPetServices] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [selectedCats, setSelectedCats] = useState<Set<string>>(new Set());
   const [openNow, setOpenNow] = useState(false);
   const [emergency, setEmergency] = useState(false);
   const [acceptsInsurance, setAcceptsInsurance] = useState(false);
   const [sort, setSort] = useState("rating");
-  const [validationErrors, setValidationErrors] = useState<{city?: string; state?: string}>({});
   const [showFiltersModal, setShowFiltersModal] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{city?: string; state?: string}>({});
 
   // Calculate total selected filters
   const getSelectedFilterCount = useCallback(() => {
@@ -174,42 +169,42 @@ function PetCareContent() {
   }, [city, state]);
 
   const search = useCallback(async () => {
-    setError(null);
-    
-    if (!validateInputs()) {
-      return;
-    }
-    
-    setIsLoading(true);
-    const params = new URLSearchParams();
-    if (city) params.set("city", city.trim());
-    if (state) params.set("state", state.trim());
-    if (selectedCats.size > 0) params.set("categories", Array.from(selectedCats).join(","));
-    if (openNow) params.set("openNow", "1");
-    if (emergency) params.set("emergency", "1");
-    if (acceptsInsurance) params.set("acceptsInsurance", "1");
-    if (sort) params.set("sort", sort);
-    
-    router.push(`/?${params.toString()}`, { scroll: false });
-    
+    if (!validateInputs()) return;
+
+    setIsSearching(true);
+    setSearchError(null);
+    setPetServices([]);
+
     try {
-      const res = await fetch(`/api/pet-services?${params.toString()}`);
-      if (!res.ok) {
-        const msg = await res.text();
-        setError(`Error: ${res.status} ${msg}`);
-        setPetServices([]);
-      } else {
-        const data = await res.json();
-        setPetServices(Array.isArray(data) ? data : []);
-        
-        // Track successful search
-        analytics.trackSearch(city.trim(), state.trim(), Array.from(selectedCats));
+      const params = new URLSearchParams({
+        city,
+        state,
+        ...(selectedCats.size > 0 && { categories: Array.from(selectedCats).join(",") }),
+        ...(openNow && { openNow: "1" }),
+        ...(emergency && { emergency: "1" }),
+        ...(acceptsInsurance && { acceptsInsurance: "1" }),
+      });
+
+      const response = await fetch(`/api/pet-services?${params.toString()}`);
+      
+      if (!response.ok) {
+        throw new Error(`Search failed: ${response.status}`);
       }
-    } catch {
-      setError("Network error. Please try again.");
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setPetServices(data);
+    } catch (error: any) {
+      console.error("Search error:", error);
+      setSearchError(error.message || "Search failed. Please try again.");
+    } finally {
+      setIsSearching(false);
     }
-    setIsLoading(false);
-  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, router, validateInputs]);
+  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, validateInputs]);
 
   // Auto-search when URL params are present
   useEffect(() => {
@@ -291,12 +286,22 @@ function PetCareContent() {
       </Hero>
 
       <section className="mx-auto max-w-6xl px-4 pb-24 mt-12">
-        {error && (
+        {searchError && (
           <div role="alert" className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            {error}
+            {searchError}
           </div>
         )}
-        {!isLoading && petServices.length > 0 && (
+        {isSearching && (
+          <div className="text-center py-12">
+            <div className="inline-flex items-center gap-3 text-lg text-gray-600">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+              <span>Searching for pet services...</span>
+            </div>
+            <p className="text-sm text-gray-500 mt-2">This should only take a few seconds</p>
+          </div>
+        )}
+        
+        {!isSearching && petServices.length > 0 && (
           <div className="mb-4 text-sm flex items-center gap-6">
             <label className="text-neutral-700">Sort by</label>
             <select 
@@ -399,14 +404,14 @@ function PetCareContent() {
             )}
           </div>
         )}
-        {isLoading && (
+        {isSearching && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" role="status" aria-label="Loading pet services">
             {Array.from({ length: 6 }).map((_, i) => (
               <Skeleton key={i} className="h-36 rounded-2xl" />
             ))}
           </div>
         )}
-        {!isLoading && petServices.length > 0 && (
+        {!isSearching && petServices.length > 0 && (
           <>
             {/* Map View 
             {petServices.length > 0 && (
@@ -493,7 +498,7 @@ function PetCareContent() {
             </div>
           </>
         )}
-        {!isLoading && petServices.length === 0 && city && state && (
+        {!isSearching && petServices.length === 0 && city && state && (
           <div className="text-center py-12">
             <p className="text-lg text-gray-600 mb-4">No pet services found in {city}, {state}</p>
             <p className="text-sm text-gray-500">Try adjusting your search criteria or location</p>

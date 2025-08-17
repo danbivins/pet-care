@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     const lat = searchParams.get("lat");
     const lng = searchParams.get("lng");
     const radius = searchParams.get("radius") || "5000";
-    const type = searchParams.get("type");
+    const types = searchParams.get("types");
 
     if (!query && (!lat || !lng)) {
       return Response.json({ 
@@ -24,23 +24,30 @@ export async function GET(req: NextRequest) {
     let params: URLSearchParams;
 
     if (query) {
-      // Text search
+      // Text search (fallback method)
       apiUrl = "https://maps.googleapis.com/maps/api/place/textsearch/json";
       params = new URLSearchParams({
         query: query,
         key: apiKey
       });
     } else {
-      // Nearby search
+      // Nearby search (much faster for location-based searches)
       apiUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
       params = new URLSearchParams({
         location: `${lat},${lng}`,
         radius: radius,
-        key: apiKey
+        key: apiKey,
+        rankby: "rating" // Rank by rating for better results
       });
       
-      if (type) {
-        params.append("type", type);
+      // Add business types if specified
+      if (types) {
+        const typeArray = types.split(',');
+        // Google Places API only supports one type at a time, so we'll use the first relevant one
+        const primaryType = typeArray.find(t => ['veterinary_care', 'pet_store', 'lodging', 'establishment'].includes(t));
+        if (primaryType) {
+          params.append("type", primaryType);
+        }
       }
     }
 

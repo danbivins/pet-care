@@ -117,13 +117,19 @@ function ContactActions({ service }: { service: any }) {
           </a>
         )}
         
-        <button className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors w-full">
+        <a 
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(service.address)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors w-full"
+          aria-label={`Get directions to ${service.name} at ${service.address}`}
+        >
           <MapPin size={20} />
           <div>
             <div className="font-medium text-left">Get Directions</div>
             <div className="text-sm text-gray-600 text-left">{service.address}</div>
           </div>
-        </button>
+        </a>
       </div>
     </div>
   );

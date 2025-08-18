@@ -216,10 +216,13 @@ function PetCareContent() {
     }
   }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, search, searchParams]);
 
-  function getServiceTypeIcon(types: string[]) {
-    if (types.includes('veterinary_care')) return '🏥';
-    if (types.includes('pet_store')) return '🛍️';
-    return '🐾';
+  function getServiceTypeIcon(types: string[]): string {
+    if (types.includes("veterinary_care")) return "🏥";
+    if (types.includes("pet_store")) return "✂️";
+    if (types.includes("lodging")) return "🏨";
+    if (types.includes("funeral_home")) return "🕯️";
+    if (types.includes("establishment")) return "🏢";
+    return "🐾";
   }
 
   return (
@@ -562,13 +565,17 @@ function PetCareContent() {
                 <div>
                   <h3 className="font-semibold text-black mb-3">Category</h3>
                   <CategoryPills
-                    selected={selectedCats}
-                    onToggle={(key) => {
-                      const next = new Set(selectedCats);
-                      if (next.has(key)) next.delete(key);
-                      else next.add(key);
-                      setSelectedCats(next);
+                    selectedCategories={selectedCats}
+                    onCategoryToggle={(category) => {
+                      const newSelected = new Set(selectedCats);
+                      if (newSelected.has(category)) {
+                        newSelected.delete(category);
+                      } else {
+                        newSelected.add(category);
+                      }
+                      setSelectedCats(newSelected);
                     }}
+                    className="mb-4"
                   />
                 </div>
                 

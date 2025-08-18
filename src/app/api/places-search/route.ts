@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
       if (types) {
         const typeArray = types.split(',');
         // Google Places API only supports one type at a time, so we'll use the first relevant one
-        const primaryType = typeArray.find(t => ['veterinary_care', 'pet_store', 'lodging', 'establishment'].includes(t));
+        const primaryType = typeArray.find(t => ['veterinary_care', 'pet_store', 'lodging', 'establishment', 'funeral_home'].includes(t));
         if (primaryType) {
           params.append("type", primaryType);
         }

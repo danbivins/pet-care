@@ -11,6 +11,7 @@ const CATEGORY_KEYWORDS: Record<string, string[]> = {
   pet_sitters: ["pet sitting", "pet sitter", "house sitting pets", "pet care services", "pet nanny"],
   dog_walkers: ["dog walking", "dog walker", "pet walking", "dog walking service"],
   emergency: ["emergency vet", "24 hour vet", "emergency animal hospital"],
+  pet_cremation: ["pet cremation", "pet crematory", "pet memorial", "pet funeral", "pet cremation service", "animal cremation", "pet aftercare"],
 };
 
 // Helper function to get coordinates for a city/state
@@ -48,7 +49,8 @@ function getBusinessTypesForCategories(categories: string[]): string[] {
     pet_trainers: ["establishment"],
     pet_sitters: ["establishment"],
     dog_walkers: ["establishment"],
-    emergency: ["veterinary_care", "hospital"]
+    emergency: ["veterinary_care", "hospital"],
+    pet_cremation: ["funeral_home", "establishment"]
   };
 
   const types: string[] = [];

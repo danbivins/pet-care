@@ -39,6 +39,7 @@ function PetCareContent() {
   const [showFiltersModal, setShowFiltersModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState<{city?: string; state?: string}>({});
   const [hasSearched, setHasSearched] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
 
   // Calculate total selected filters
   const getSelectedFilterCount = useCallback(() => {
@@ -97,9 +98,13 @@ function PetCareContent() {
 
   // Update URL parameters to reflect current search state
   const updateURLParams = useCallback(() => {
+    // Only update URL if we have a city and state (indicating a valid search)
+    if (!city || !state) return;
+    
     const params = new URLSearchParams();
-    if (city) params.set('city', city);
-    if (state) params.set('state', state);
+    params.set('city', city);
+    params.set('state', state);
+    
     if (selectedCats.size > 0) params.set('categories', Array.from(selectedCats).join(','));
     if (openNow) params.set('openNow', '1');
     if (emergency) params.set('emergency', '1');
@@ -107,8 +112,25 @@ function PetCareContent() {
     if (sort) params.set('sort', sort);
     
     const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
-    window.history.replaceState({}, '', newURL);
+    
+    // Use replaceState to avoid adding to browser history unnecessarily
+    try {
+      window.history.replaceState({}, '', newURL);
+    } catch (error) {
+      console.warn('Could not update URL:', error);
+    }
   }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort]);
+
+  // Debounced URL update to prevent excessive calls
+  useEffect(() => {
+    if (!hasSearched || isInitializing) return;
+    
+    const timeoutId = setTimeout(() => {
+      updateURLParams();
+    }, 300); // 300ms delay to batch multiple state changes
+    
+    return () => clearTimeout(timeoutId);
+  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, hasSearched, isInitializing, updateURLParams]);
 
   // Focus management for modal accessibility
   useEffect(() => {
@@ -228,20 +250,20 @@ function PetCareContent() {
         updateURLParams();
       }
     }
+    
+    // Mark initialization as complete
+    setIsInitializing(false);
   }, [searchParams, restoreSearchState, updateURLParams]);
 
-  // Update URL whenever search state changes
+  // Save search state whenever it changes (debounced)
   useEffect(() => {
-    if (hasSearched) {
-      updateURLParams();
-    }
-  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, hasSearched, updateURLParams]);
-
-  // Save search state whenever it changes
-  useEffect(() => {
-    if (hasSearched) {
+    if (!hasSearched) return;
+    
+    const timeoutId = setTimeout(() => {
       saveSearchState();
-    }
+    }, 300); // 300ms delay to batch multiple state changes
+    
+    return () => clearTimeout(timeoutId);
   }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, petServices, hasSearched, saveSearchState]);
 
   const validateInputs = useCallback(() => {

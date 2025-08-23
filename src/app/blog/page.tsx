@@ -1,59 +1,67 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Pet Care Resources & Tips | LocalPetGuide",
-  description: "Expert advice, local insights, and practical tips to help you provide the best care for your furry, feathered, or scaled family members.",
-  openGraph: {
-    title: "Pet Care Resources & Tips | LocalPetGuide",
-    description: "Expert advice and practical tips for pet owners to find the best veterinary care, grooming, and pet services.",
-    type: "website",
-  },
-};
+import Link from "next/link";
+import { useState } from "react";
 
 const blogPosts = [
   {
-    slug: "choosing-right-veterinarian",
-    title: "How to Choose the Right Veterinarian for Your Pet",
-    excerpt: "Finding a trusted veterinarian is one of the most important decisions you'll make as a pet owner. Learn what to look for, questions to ask, and red flags to avoid.",
-    date: "2024-08-15",
-    readTime: "8 min read",
-    category: "Veterinary Care"
-  },
-  {
-    slug: "pet-boarding-vs-in-home-pet-sitting",
-    title: "Pet Boarding vs. In-Home Pet Sitting: Which is Right for You?",
-    excerpt: "Compare the benefits and drawbacks of different pet care options when you travel. Make the best choice for your pet's comfort and safety.",
-    date: "2024-08-10",
-    readTime: "7 min read",
-    category: "Pet Care"
-  },
-  {
+    title: "How to Find a Qualified Pet Trainer",
+    excerpt: "Discover the essential qualities to look for when choosing a professional pet trainer for your furry friend.",
     slug: "how-to-find-qualified-pet-trainer",
-    title: "How to Find a Qualified Pet Trainer in Your Area",
-    excerpt: "Training is essential for a well-behaved pet. Learn how to identify qualified trainers, what methods to look for, and red flags to avoid.",
-    date: "2024-08-08",
-    readTime: "6 min read",
-    category: "Training"
+    category: "Training",
+    readTime: "5 min read",
+    publishDate: "2024-12-15"
   },
   {
+    title: "Pet Boarding vs. In-Home Pet Sitting: Which is Right for You?",
+    excerpt: "Compare the pros and cons of pet boarding facilities versus in-home pet sitting services to make the best choice for your pet.",
+    slug: "pet-boarding-vs-in-home-pet-sitting",
+    category: "Boarding",
+    readTime: "6 min read",
+    publishDate: "2024-12-12"
+  },
+  {
+    title: "How to Groom Your Dog at Home: A Complete Guide",
+    excerpt: "Learn professional grooming techniques you can use at home to keep your dog clean, healthy, and looking great.",
     slug: "how-to-groom-dog-at-home",
-    title: "How to Groom a Dog at Home",
-    excerpt: "Help your dog look and feel their best when you can't get to a local groomer this week.",
-    date: "2024-08-05",
+    category: "Grooming",
     readTime: "8 min read",
-    category: "Grooming"
+    publishDate: "2024-12-10"
+  },
+  {
+    title: "Choosing the Right Veterinarian for Your Pet",
+    excerpt: "Essential tips for finding a veterinarian who will provide the best care for your beloved companion.",
+    slug: "choosing-right-veterinarian",
+    category: "Veterinary",
+    readTime: "7 min read",
+    publishDate: "2024-12-08"
+  },
+  {
+    title: "Saying Goodbye: A Compassionate Guide to Pet Cremation",
+    excerpt: "A compassionate guide to pet cremation options, helping you make informed decisions during one of life's most difficult moments.",
+    slug: "saying-goodbye-compassionate-guide-pet-cremation",
+    category: "Pet Care",
+    readTime: "12 min read",
+    publishDate: "2024-12-19"
   }
 ];
 
 const categories = [
-  { name: "Veterinary Care", count: 1, href: "/blog/category/veterinary-care" },
-  { name: "Grooming", count: 1, href: "/blog/category/grooming" },
-  { name: "Training", count: 1, href: "/blog/category/training" },
-  { name: "Pet Care", count: 1, href: "/blog/category/pet-care" }
+  { name: "All", count: blogPosts.length },
+  { name: "Pet Care", count: 1 },
+  { name: "Training", count: 1 },
+  { name: "Boarding", count: 1 },
+  { name: "Grooming", count: 1 },
+  { name: "Veterinary", count: 1 }
 ];
 
 export default function BlogPage() {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const filteredPosts = selectedCategory && selectedCategory !== "All" 
+    ? blogPosts.filter(post => post.category === selectedCategory)
+    : blogPosts;
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-16">
       <div className="text-center mb-16">
@@ -70,50 +78,41 @@ export default function BlogPage() {
         {/* Main Content */}
         <div className="lg:col-span-3">
           <div className="grid gap-8">
-            {blogPosts.map((post) => (
-              <article key={post.slug} className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
-                  <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
-                    {post.category}
-                  </span>
-                  <time dateTime={post.date}>
-                    {new Date(post.date).toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
-                  </time>
-                  <span>{post.readTime}</span>
-                </div>
-                
-                <h2 className="text-2xl font-bold text-black mb-4 leading-tight">
+            {filteredPosts.map((post) => (
+              <article key={post.slug} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-sm text-gray-500">{post.category}</span>
+                    <span className="text-gray-300">•</span>
+                    <span className="text-sm text-gray-500">{post.readTime}</span>
+                    <span className="text-gray-300">•</span>
+                    <span className="text-sm text-gray-500">{post.publishDate}</span>
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    <Link href={`/blog/${post.slug}`} className="hover:text-blue-600 transition-colors">
+                      {post.title}
+                    </Link>
+                  </h3>
+                  <p className="text-gray-600 mb-4">{post.excerpt}</p>
                   <Link 
                     href={`/blog/${post.slug}`}
-                    className="hover:text-blue-600 transition-colors no-underline"
+                    className="text-blue-600 hover:text-blue-800 font-medium text-sm inline-flex items-center gap-1"
                   >
-                    {post.title}
+                    Read more
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
                   </Link>
-                </h2>
-                
-                <p className="text-gray-600 mb-6 leading-relaxed text-lg">
-                  {post.excerpt}
-                </p>
-                
-                <Link 
-                  href={`/blog/${post.slug}`}
-                  className="inline-flex items-center text-blue-600 font-medium hover:text-blue-700 transition-colors"
-                >
-                  Read full article →
-                </Link>
+                </div>
               </article>
             ))}
           </div>
 
           {/* Pagination - Only show when there are more than 10 posts */}
-          {blogPosts.length > 10 && (
+          {filteredPosts.length > 10 && (
             <div className="mt-12 flex justify-center">
               <nav className="flex items-center gap-2" aria-label="Pagination">
-                {Array.from({ length: Math.ceil(blogPosts.length / 10) }, (_, i) => (
+                {Array.from({ length: Math.ceil(filteredPosts.length / 10) }, (_, i) => (
                   <Link 
                     key={i + 1}
                     href={`/blog?page=${i + 1}`} 
@@ -126,7 +125,7 @@ export default function BlogPage() {
                     {i + 1}
                   </Link>
                 ))}
-                {Math.ceil(blogPosts.length / 10) > 1 && (
+                {Math.ceil(filteredPosts.length / 10) > 1 && (
                   <Link 
                     href="/blog?page=2" 
                     className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
@@ -144,21 +143,21 @@ export default function BlogPage() {
           {/* Categories */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <h3 className="text-lg font-semibold mb-4">Browse by Category</h3>
-            <nav>
-              <ul className="space-y-2">
-                {categories.map((category) => (
-                  <li key={category.name}>
-                    <Link 
-                      href={category.href}
-                      className="flex items-center justify-between p-2 rounded hover:bg-gray-50 transition-colors group"
-                    >
-                      <span className="group-hover:text-blue-600">{category.name}</span>
-                      <span className="text-sm text-gray-500">({category.count})</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+            <div className="space-y-2">
+              {categories.map((category) => (
+                <button
+                  key={category.name}
+                  onClick={() => setSelectedCategory(category.name === 'All' ? null : category.name)}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    selectedCategory === category.name || (selectedCategory === null && category.name === 'All')
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {category.name} ({category.count})
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Newsletter Signup */}

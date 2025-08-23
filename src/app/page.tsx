@@ -11,6 +11,19 @@ const MapView = dynamic(() => import("@/components/MapView").then(mod => ({ defa
   ssr: false
 });
 
+// Interface for search state
+interface SearchState {
+  city: string;
+  state: string;
+  selectedCats: string[];
+  openNow: boolean;
+  emergency: boolean;
+  acceptsInsurance: boolean;
+  sort: string;
+  petServices: any[];
+  hasSearched: boolean;
+}
+
 function PetCareContent() {
   const searchParams = useSearchParams();
   const [city, setCity] = useState("");
@@ -25,6 +38,7 @@ function PetCareContent() {
   const [sort, setSort] = useState("rating");
   const [showFiltersModal, setShowFiltersModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState<{city?: string; state?: string}>({});
+  const [hasSearched, setHasSearched] = useState(false);
 
   // Calculate total selected filters
   const getSelectedFilterCount = useCallback(() => {
@@ -37,6 +51,64 @@ function PetCareContent() {
   }, [selectedCats, openNow, emergency, acceptsInsurance]);
 
   const selectedFilterCount = getSelectedFilterCount();
+
+  // Save search state to localStorage
+  const saveSearchState = useCallback(() => {
+    const searchState: SearchState = {
+      city,
+      state,
+      selectedCats: Array.from(selectedCats),
+      openNow,
+      emergency,
+      acceptsInsurance,
+      sort,
+      petServices,
+      hasSearched: true
+    };
+    localStorage.setItem('petCareSearchState', JSON.stringify(searchState));
+  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, petServices]);
+
+  // Restore search state from localStorage
+  const restoreSearchState = useCallback(() => {
+    try {
+      const savedState = localStorage.getItem('petCareSearchState');
+      if (savedState) {
+        const parsedState: SearchState = JSON.parse(savedState);
+        
+        // Only restore if we have valid city and state
+        if (parsedState.city && parsedState.state) {
+          setCity(parsedState.city);
+          setState(parsedState.state);
+          setSelectedCats(new Set(parsedState.selectedCats));
+          setOpenNow(parsedState.openNow);
+          setEmergency(parsedState.emergency);
+          setAcceptsInsurance(parsedState.acceptsInsurance);
+          setSort(parsedState.sort);
+          setPetServices(parsedState.petServices);
+          setHasSearched(parsedState.hasSearched);
+          return true;
+        }
+      }
+    } catch (error) {
+      console.error('Error restoring search state:', error);
+    }
+    return false;
+  }, []);
+
+  // Update URL parameters to reflect current search state
+  const updateURLParams = useCallback(() => {
+    const params = new URLSearchParams();
+    if (city) params.set('city', city);
+    if (state) params.set('state', state);
+    if (selectedCats.size > 0) params.set('categories', Array.from(selectedCats).join(','));
+    if (openNow) params.set('openNow', '1');
+    if (emergency) params.set('emergency', '1');
+    if (acceptsInsurance) params.set('acceptsInsurance', '1');
+    if (sort) params.set('sort', sort);
+    
+    const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+    window.history.replaceState({}, '', newURL);
+  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort]);
 
   // Focus management for modal accessibility
   useEffect(() => {
@@ -123,27 +195,54 @@ function PetCareContent() {
     }
   }, [selectedCats]);
 
-  // Initialize state from URL params on mount
+  // Initialize state from URL params or localStorage on mount
   useEffect(() => {
     const cityParam = searchParams.get("city");
     const stateParam = searchParams.get("state");
-    const categoriesParam = searchParams.get("categories");
-    const openNowParam = searchParams.get("openNow");
-    const emergencyParam = searchParams.get("emergency");
-    const insuranceParam = searchParams.get("acceptsInsurance");
-    const sortParam = searchParams.get("sort");
+    
+    if (cityParam && stateParam) {
+      // URL params take precedence
+      setCity(cityParam);
+      setState(stateParam);
+      
+      // Restore other state from URL params
+      const categoriesParam = searchParams.get("categories");
+      const openNowParam = searchParams.get("openNow");
+      const emergencyParam = searchParams.get("emergency");
+      const insuranceParam = searchParams.get("acceptsInsurance");
+      const sortParam = searchParams.get("sort");
 
-    if (cityParam) setCity(cityParam);
-    if (stateParam) setState(stateParam);
-    if (categoriesParam) {
-      const cats = categoriesParam.split(",") as string[];
-      setSelectedCats(new Set(cats));
+      if (categoriesParam) {
+        const cats = categoriesParam.split(",") as string[];
+        setSelectedCats(new Set(cats));
+      }
+      if (openNowParam) setOpenNow(openNowParam === "1");
+      if (emergencyParam) setEmergency(emergencyParam === "1");
+      if (insuranceParam) setAcceptsInsurance(insuranceParam === "1");
+      if (sortParam) setSort(sortParam);
+    } else {
+      // Try to restore from localStorage if no URL params
+      const restored = restoreSearchState();
+      if (restored) {
+        // Update URL to reflect restored state
+        updateURLParams();
+      }
     }
-    if (openNowParam) setOpenNow(openNowParam === "1");
-    if (emergencyParam) setEmergency(emergencyParam === "1");
-    if (insuranceParam) setAcceptsInsurance(insuranceParam === "1");
-    if (sortParam) setSort(sortParam);
-  }, [searchParams]);
+  }, [searchParams, restoreSearchState, updateURLParams]);
+
+  // Update URL whenever search state changes
+  useEffect(() => {
+    if (hasSearched) {
+      updateURLParams();
+    }
+  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, hasSearched, updateURLParams]);
+
+  // Save search state whenever it changes
+  useEffect(() => {
+    if (hasSearched) {
+      saveSearchState();
+    }
+  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, petServices, hasSearched, saveSearchState]);
 
   const validateInputs = useCallback(() => {
     const errors: {city?: string; state?: string} = {};
@@ -198,6 +297,7 @@ function PetCareContent() {
       }
 
       setPetServices(data);
+      setHasSearched(true);
     } catch (error: any) {
       console.error("Search error:", error);
       setSearchError(error.message || "Search failed. Please try again.");
@@ -206,15 +306,13 @@ function PetCareContent() {
     }
   }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, validateInputs]);
 
-  // Auto-search when URL params are present
+  // Auto-search when URL params are present or when state is restored
   useEffect(() => {
-    const cityParam = searchParams.get("city");
-    const stateParam = searchParams.get("state");
-    
-    if (cityParam && stateParam && city === cityParam && state === stateParam) {
+    if (city && state && hasSearched && petServices.length === 0) {
+      // Only auto-search if we have city/state, have searched before, but no results
       search();
     }
-  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, search, searchParams]);
+  }, [city, state, hasSearched, petServices.length, search]);
 
   function getServiceTypeIcon(types: string[]): string {
     if (types.includes("veterinary_care")) return "🏥";
@@ -224,6 +322,26 @@ function PetCareContent() {
     if (types.includes("establishment")) return "🏢";
     return "🐾";
   }
+
+  // Clear search state and results
+  const clearSearch = useCallback(() => {
+    setCity("");
+    setState("");
+    setSelectedCats(new Set());
+    setOpenNow(false);
+    setEmergency(false);
+    setAcceptsInsurance(false);
+    setSort("rating");
+    setPetServices([]);
+    setSearchError(null);
+    setHasSearched(false);
+    
+    // Clear localStorage
+    localStorage.removeItem('petCareSearchState');
+    
+    // Clear URL params
+    window.history.replaceState({}, '', window.location.pathname);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -282,6 +400,15 @@ function PetCareContent() {
           >
             Search Pet Services
           </button>
+          {hasSearched && (
+            <button
+              onClick={clearSearch}
+              className="h-12 px-6 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-semibold shadow-sm"
+              tabIndex={showFiltersModal ? -1 : 0}
+            >
+              Clear Search
+            </button>
+          )}
           <div id="search-description" className="sr-only">
             Search for pet care services in the specified city and state
           </div>

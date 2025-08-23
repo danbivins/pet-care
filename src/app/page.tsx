@@ -85,13 +85,18 @@ function PetCareContent() {
           setEmergency(parsedState.emergency);
           setAcceptsInsurance(parsedState.acceptsInsurance);
           setSort(parsedState.sort);
-          setPetServices(parsedState.petServices);
-          setHasSearched(parsedState.hasSearched);
+          
+          // Don't automatically restore search results to prevent infinite loops
+          // Only restore the search parameters, not the results
+          setHasSearched(false);
+          setPetServices([]);
           return true;
         }
       }
     } catch (error) {
       console.error('Error restoring search state:', error);
+      // Clear corrupted localStorage
+      localStorage.removeItem('petCareSearchState');
     }
     return false;
   }, []);
@@ -291,10 +296,21 @@ function PetCareContent() {
 
   const search = useCallback(async () => {
     if (!validateInputs()) return;
+    
+    // Prevent multiple simultaneous searches
+    if (isSearching) return;
 
     setIsSearching(true);
     setSearchError(null);
     setPetServices([]);
+
+    // Add timeout to prevent hanging searches
+    const searchTimeout = setTimeout(() => {
+      if (isSearching) {
+        setIsSearching(false);
+        setSearchError("Search timed out. Please try again.");
+      }
+    }, 30000); // 30 second timeout
 
     try {
       const params = new URLSearchParams({
@@ -324,17 +340,22 @@ function PetCareContent() {
       console.error("Search error:", error);
       setSearchError(error.message || "Search failed. Please try again.");
     } finally {
+      clearTimeout(searchTimeout);
       setIsSearching(false);
     }
-  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, validateInputs]);
+  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, validateInputs, isSearching]);
 
   // Auto-search when URL params are present or when state is restored
   useEffect(() => {
-    if (city && state && hasSearched && petServices.length === 0) {
-      // Only auto-search if we have city/state, have searched before, but no results
+    // Only auto-search if we have city/state from URL params, not from localStorage
+    const cityParam = searchParams.get("city");
+    const stateParam = searchParams.get("state");
+    
+    if (cityParam && stateParam && !isInitializing) {
+      // Only auto-search if URL params are present and we're not initializing
       search();
     }
-  }, [city, state, hasSearched, petServices.length, search]);
+  }, [searchParams, isInitializing, search]);
 
   function getServiceTypeIcon(types: string[]): string {
     if (types.includes("veterinary_care")) return "🏥";
@@ -440,7 +461,19 @@ function PetCareContent() {
       <section className="mx-auto max-w-6xl px-4 pb-24 mt-12">
         {searchError && (
           <div role="alert" className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            {searchError}
+            <div className="flex items-center justify-between">
+              <span>{searchError}</span>
+              <button
+                onClick={() => {
+                  setSearchError(null);
+                  setIsSearching(false);
+                  setPetServices([]);
+                }}
+                className="text-red-600 hover:text-red-800 font-medium"
+              >
+                Dismiss
+              </button>
+            </div>
           </div>
         )}
         {isSearching && (
@@ -449,7 +482,17 @@ function PetCareContent() {
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
               <span>Searching for pet services...</span>
             </div>
-            <p className="text-sm text-gray-500 mt-2">This should only take a few seconds</p>
+            <div className="mt-4">
+              <button
+                onClick={() => {
+                  setIsSearching(false);
+                  setSearchError("Search cancelled by user.");
+                }}
+                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Cancel Search
+              </button>
+            </div>
           </div>
         )}
         

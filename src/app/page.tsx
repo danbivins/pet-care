@@ -1,6 +1,6 @@
 "use client";
 import dynamic from 'next/dynamic';
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useCallback, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Hero from "@/components/Hero";
@@ -40,6 +40,7 @@ function PetCareContent() {
   const [validationErrors, setValidationErrors] = useState<{city?: string; state?: string}>({});
   const [hasSearched, setHasSearched] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
+  const lastSearchKey = useRef<string | null>(null);
 
   // Calculate total selected filters
   const getSelectedFilterCount = useCallback(() => {
@@ -106,6 +107,9 @@ function PetCareContent() {
     // Only update URL if we have a city and state (indicating a valid search)
     if (!city || !state) return;
     
+    // Don't update URL if we're currently searching to prevent loops
+    if (isSearching) return;
+    
     const params = new URLSearchParams();
     params.set('city', city);
     params.set('state', state);
@@ -124,7 +128,7 @@ function PetCareContent() {
     } catch (error) {
       console.warn('Could not update URL:', error);
     }
-  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort]);
+  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, sort, isSearching]);
 
   // Debounced URL update to prevent excessive calls
   useEffect(() => {
@@ -299,10 +303,19 @@ function PetCareContent() {
     
     // Prevent multiple simultaneous searches
     if (isSearching) return;
+    
+    // Prevent search if we're already displaying results for this exact search
+    const currentSearchKey = `${city}-${state}-${Array.from(selectedCats).sort().join(',')}-${openNow}-${emergency}-${acceptsInsurance}`;
+    if (hasSearched && currentSearchKey === lastSearchKey.current) {
+      return;
+    }
 
     setIsSearching(true);
     setSearchError(null);
     setPetServices([]);
+    
+    // Store the current search parameters to prevent duplicate searches
+    lastSearchKey.current = currentSearchKey;
 
     // Add timeout to prevent hanging searches
     const searchTimeout = setTimeout(() => {
@@ -343,7 +356,7 @@ function PetCareContent() {
       clearTimeout(searchTimeout);
       setIsSearching(false);
     }
-  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, validateInputs, isSearching]);
+  }, [city, state, selectedCats, openNow, emergency, acceptsInsurance, validateInputs, isSearching, hasSearched]);
 
   // Auto-search when URL params are present or when state is restored
   useEffect(() => {
@@ -351,11 +364,16 @@ function PetCareContent() {
     const cityParam = searchParams.get("city");
     const stateParam = searchParams.get("state");
     
-    if (cityParam && stateParam && !isInitializing) {
-      // Only auto-search if URL params are present and we're not initializing
+    // Prevent auto-search if:
+    // 1. We're already searching
+    // 2. We're still initializing
+    // 3. We already have search results for this location
+    // 4. The search was triggered by URL update (not user action)
+    if (cityParam && stateParam && !isInitializing && !isSearching && !hasSearched) {
+      // Only auto-search if URL params are present and we're not in a search state
       search();
     }
-  }, [searchParams, isInitializing, search]);
+  }, [searchParams, isInitializing, search, isSearching, hasSearched]);
 
   function getServiceTypeIcon(types: string[]): string {
     if (types.includes("veterinary_care")) return "🏥";
@@ -378,6 +396,8 @@ function PetCareContent() {
     setPetServices([]);
     setSearchError(null);
     setHasSearched(false);
+    setIsSearching(false);
+    lastSearchKey.current = null;
     
     // Clear localStorage
     localStorage.removeItem('petCareSearchState');

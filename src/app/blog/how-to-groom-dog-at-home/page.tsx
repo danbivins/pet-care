@@ -8,8 +8,8 @@ export const metadata: Metadata = {
     title: "How to Groom a Dog at Home",
     description: "Help your dog look and feel their best when you can't get to a local groomer this week.",
     type: "article",
-    publishedTime: "2024-08-05T00:00:00.000Z",
-    authors: ["LocalPetGuide"],
+    publishedTime: "2024-12-10T00:00:00.000Z",
+    authors: ["Jane Doe"],
     tags: ["dog grooming", "home grooming", "pet care", "dog maintenance", "grooming tips"],
   },
 };
@@ -34,9 +34,15 @@ export default function HowToGroomDogAtHomePage() {
           <span className="inline-block bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium mb-4">
             Grooming
           </span>
-          <time dateTime="2024-08-05" className="text-gray-500 text-sm">
-            August 5, 2024 • 8 min read
-          </time>
+          <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+            <time dateTime="2024-12-10">
+              December 10, 2024
+            </time>
+            <span>•</span>
+            <span>8 min read</span>
+            <span>•</span>
+            <span>By Jane Doe</span>
+          </div>
         </div>
         <h1 className="text-4xl sm:text-5xl font-bold text-black mb-6 leading-tight">
           How to Groom a Dog at Home

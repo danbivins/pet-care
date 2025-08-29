@@ -9,6 +9,9 @@ export const metadata: Metadata = {
     title: "How to Choose the Right Veterinarian for Your Pet",
     description: "Complete guide to finding the perfect veterinary care for your pet",
     type: "article",
+    publishedTime: "2024-12-08T00:00:00.000Z",
+    authors: ["Jane Doe"],
+    tags: ["veterinarian", "pet care", "veterinary care", "pet health", "choosing vet"],
   },
 };
 
@@ -43,19 +46,19 @@ export default function ChoosingVeterinarianArticle() {
         <header className="mb-12">
           <div className="flex items-center gap-4 mb-6 text-sm text-gray-500">
             <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
-              Veterinary Care
+              Veterinary
             </span>
             <div className="flex items-center gap-1">
               <Calendar size={16} />
-              <time dateTime="2024-08-15">August 15, 2024</time>
+              <time dateTime="2024-12-08">December 8, 2024</time>
             </div>
             <div className="flex items-center gap-1">
               <Clock size={16} />
-              <span>8 minute read</span>
+              <span>7 minute read</span>
             </div>
             <div className="flex items-center gap-1">
               <User size={16} />
-              <span>Pet Care Team</span>
+              <span>By Jane Doe</span>
             </div>
           </div>
           

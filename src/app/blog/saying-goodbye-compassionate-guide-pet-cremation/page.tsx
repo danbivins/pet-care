@@ -10,18 +10,43 @@ export const metadata: Metadata = {
     description: 'A compassionate guide to pet cremation options, helping you make informed decisions during one of life\'s most difficult moments.',
     type: 'article',
     publishedTime: '2024-12-19T00:00:00.000Z',
-    authors: ['LocalPetGuide'],
+    authors: ['Jane Doe'],
   },
 };
 
 export default function PetCremationGuidePage() {
   return (
     <article className="max-w-4xl mx-auto px-4 py-8">
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+      {/* Breadcrumb */}
+      <nav className="text-sm text-gray-500 mb-8" aria-label="Breadcrumb">
+        <ol className="flex items-center space-x-2">
+          <li><Link href="/" className="hover:text-blue-600">Home</Link></li>
+          <li><span className="mx-2">/</span></li>
+          <li><Link href="/blog" className="hover:text-blue-600">Blog</Link></li>
+          <li><span className="mx-2">/</span></li>
+          <li className="text-gray-700">Pet Cremation Guide</li>
+        </ol>
+      </nav>
+
+      <header className="mb-12">
+        <div className="mb-6">
+          <span className="inline-block bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium mb-4">
+            Pet Care
+          </span>
+          <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+            <time dateTime="2024-12-19">
+              December 19, 2024
+            </time>
+            <span>•</span>
+            <span>12 min read</span>
+            <span>•</span>
+            <span>By Jane Doe</span>
+          </div>
+        </div>
+        <h1 className="text-4xl sm:text-5xl font-bold text-black mb-6 leading-tight">
           Saying Goodbye: A Compassionate Guide to Pet Cremation
         </h1>
-        <p className="text-lg text-gray-600 italic">
+        <p className="text-xl text-gray-600 leading-relaxed">
           When your beloved companion passes away, knowing your options can help you make the right choice for your family during this difficult time.
         </p>
       </header>

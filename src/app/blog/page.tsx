@@ -10,7 +10,8 @@ const blogPosts = [
     slug: "how-to-find-qualified-pet-trainer",
     category: "Training",
     readTime: "5 min read",
-    publishDate: "2024-12-15"
+    publishDate: "2024-12-15",
+    author: "Jane Doe"
   },
   {
     title: "Pet Boarding vs. In-Home Pet Sitting: Which is Right for You?",
@@ -18,7 +19,8 @@ const blogPosts = [
     slug: "pet-boarding-vs-in-home-pet-sitting",
     category: "Boarding",
     readTime: "6 min read",
-    publishDate: "2024-12-12"
+    publishDate: "2024-12-12",
+    author: "Jane Doe"
   },
   {
     title: "How to Groom Your Dog at Home: A Complete Guide",
@@ -26,7 +28,8 @@ const blogPosts = [
     slug: "how-to-groom-dog-at-home",
     category: "Grooming",
     readTime: "8 min read",
-    publishDate: "2024-12-10"
+    publishDate: "2024-12-10",
+    author: "Jane Doe"
   },
   {
     title: "Choosing the Right Veterinarian for Your Pet",
@@ -34,7 +37,8 @@ const blogPosts = [
     slug: "choosing-right-veterinarian",
     category: "Veterinary",
     readTime: "7 min read",
-    publishDate: "2024-12-08"
+    publishDate: "2024-12-08",
+    author: "Jane Doe"
   },
   {
     title: "Saying Goodbye: A Compassionate Guide to Pet Cremation",
@@ -42,7 +46,8 @@ const blogPosts = [
     slug: "saying-goodbye-compassionate-guide-pet-cremation",
     category: "Pet Care",
     readTime: "12 min read",
-    publishDate: "2024-12-19"
+    publishDate: "2024-12-19",
+    author: "Jane Doe"
   }
 ];
 
@@ -86,23 +91,30 @@ export default function BlogPage() {
                     <span className="text-gray-300">•</span>
                     <span className="text-sm text-gray-500">{post.readTime}</span>
                     <span className="text-gray-300">•</span>
-                    <span className="text-sm text-gray-500">{post.publishDate}</span>
+                    <span className="text-sm text-gray-500">{new Date(post.publishDate).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}</span>
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     <Link href={`/blog/${post.slug}`} className="hover:text-blue-600 transition-colors">
                       {post.title}
                     </Link>
                   </h3>
-                  <p className="text-gray-600 mb-4">{post.excerpt}</p>
-                  <Link 
-                    href={`/blog/${post.slug}`}
-                    className="text-blue-600 hover:text-blue-800 font-medium text-sm inline-flex items-center gap-1"
-                  >
-                    Read more
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
+                  <p className="text-gray-600 mb-3">{post.excerpt}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">By {post.author}</span>
+                    <Link 
+                      href={`/blog/${post.slug}`}
+                      className="text-blue-600 hover:text-blue-800 font-medium text-sm inline-flex items-center gap-1"
+                    >
+                      Read more
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
                 </div>
               </article>
             ))}

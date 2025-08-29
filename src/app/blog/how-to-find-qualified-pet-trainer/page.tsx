@@ -8,8 +8,8 @@ export const metadata: Metadata = {
     title: "How to Find a Qualified Pet Trainer Near Me",
     description: "Training is essential for a well-behaved pet. Learn how to identify qualified trainers, what methods to look for, and red flags to avoid.",
     type: "article",
-    publishedTime: "2024-08-08T00:00:00.000Z",
-    authors: ["LocalPetGuide"],
+    publishedTime: "2024-12-15T00:00:00.000Z",
+    authors: ["Jane Doe"],
     tags: ["pet training", "dog training", "cat training", "pet behavior", "trainer certification"],
   },
 };
@@ -34,9 +34,15 @@ export default function HowToFindQualifiedPetTrainerPage() {
           <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium mb-4">
             Training
           </span>
-          <time dateTime="2024-08-08" className="text-gray-500 text-sm">
-            August 8, 2024 • 6 min read
-          </time>
+          <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+            <time dateTime="2024-12-15">
+              December 15, 2024
+            </time>
+            <span>•</span>
+            <span>5 min read</span>
+            <span>•</span>
+            <span>By Jane Doe</span>
+          </div>
         </div>
         <h1 className="text-4xl sm:text-5xl font-bold text-black mb-6 leading-tight">
           How to Find a Qualified Pet Trainer in Your Area

@@ -8,8 +8,8 @@ export const metadata: Metadata = {
     title: "Pet Boarding vs. In-Home Pet Sitting: Which is Right for You?",
     description: "Compare the benefits and drawbacks of different pet care options when you travel. Make the best choice for your pet's comfort and safety.",
     type: "article",
-    publishedTime: "2024-08-10T00:00:00.000Z",
-    authors: ["LocalPetGuide"],
+    publishedTime: "2024-12-12T00:00:00.000Z",
+    authors: ["Jane Doe"],
     tags: ["pet boarding", "pet sitting", "pet care", "travel", "veterinarian"],
   },
 };
@@ -32,11 +32,17 @@ export default function PetBoardingVsPetSittingPage() {
       <header className="mb-12">
         <div className="mb-6">
           <span className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium mb-4">
-            Pet Care
+            Boarding
           </span>
-          <time dateTime="2024-08-10" className="text-gray-500 text-sm">
-            August 10, 2024 • 7 min read
-          </time>
+          <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+            <time dateTime="2024-12-12">
+              December 12, 2024
+            </time>
+            <span>•</span>
+            <span>6 min read</span>
+            <span>•</span>
+            <span>By Jane Doe</span>
+          </div>
         </div>
         <h1 className="text-4xl sm:text-5xl font-bold text-black mb-6 leading-tight">
           Pet Boarding vs. In-Home Pet Sitting: Which is Right for You?

@@ -175,6 +175,9 @@ export async function GET(req: NextRequest) {
     const businessTypes = getBusinessTypesForCategories(categories);
     if (businessTypes.length > 0) {
       searchUrl.searchParams.set('types', businessTypes.join(','));
+    } else {
+      // No categories: bias toward pet-related places
+      searchUrl.searchParams.set('keyword', 'pet veterinarian grooming');
     }
 
     try {

@@ -8,6 +8,7 @@ export async function GET(req: NextRequest) {
     const lng = searchParams.get("lng");
     const radius = searchParams.get("radius") || "5000";
     const types = searchParams.get("types");
+    const keyword = searchParams.get("keyword");
 
     if (!query && (!lat || !lng)) {
       return Response.json({ 
@@ -33,11 +34,11 @@ export async function GET(req: NextRequest) {
     } else {
       // Nearby search (much faster for location-based searches)
       apiUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
+      // rankby defaults to prominence; "rating" is invalid and causes INVALID_REQUEST
       params = new URLSearchParams({
         location: `${lat},${lng}`,
         radius: radius,
-        key: apiKey,
-        rankby: "rating" // Rank by rating for better results
+        key: apiKey
       });
       
       // Add business types if specified
@@ -48,6 +49,10 @@ export async function GET(req: NextRequest) {
         if (primaryType) {
           params.append("type", primaryType);
         }
+      }
+      // Add keyword to bias results when no type (e.g. "pet" for pet services)
+      if (keyword) {
+        params.append("keyword", keyword);
       }
     }
 

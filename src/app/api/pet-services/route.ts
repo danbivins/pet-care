@@ -144,15 +144,15 @@ export async function GET(req: NextRequest) {
     const emergency = searchParams.get("emergency") === "1";
     const sort = searchParams.get("sort") || "rating";
 
-    if (!city && !state) {
-      return Response.json({ error: "city or state is required" }, { status: 400 });
+    if (!city || !state) {
+      return Response.json({ error: "city and state are required" }, { status: 400 });
     }
 
     if (!process.env.GOOGLE_PLACES_API_KEY && !process.env.GOOGLE_MAPS_API_KEY) {
       return Response.json({ error: "Google Places API key is missing" }, { status: 503 });
     }
 
-    const cacheKey = `pet-services:${city}-${state}:${categories.sort().join("|")}:${emergency ? 'emergency' : ''}`.toLowerCase();
+    const cacheKey = `pet-services:${city}-${state}:${categories.sort().join("|")}:${openNow ? "openNow" : ""}:${emergency ? "emergency" : ""}:${sort}`.toLowerCase();
     const cached = await getCached(cacheKey);
     if (cached) return Response.json(cached);
 
@@ -162,7 +162,8 @@ export async function GET(req: NextRequest) {
     // Get coordinates for the city/state
     const coordinates = await getCoordinatesForLocation(city, state);
     if (!coordinates) {
-      return Response.json({ error: "Could not find coordinates for location" }, { status: 400 });
+      console.warn("Could not geocode location, falling back to text search:", { city, state });
+      return await fallbackTextSearch(city, state, categories, emergency, openNow, sort);
     }
 
     // Use nearby search with coordinates - single API call instead of multiple text searches

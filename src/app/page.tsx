@@ -41,6 +41,7 @@ function PetCareContent() {
   const [hasSearched, setHasSearched] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const lastSearchKey = useRef<string | null>(null);
+  const lastAutoSearchKey = useRef<string | null>(null);
 
   // Calculate total selected filters
   const getSelectedFilterCount = useCallback(() => {
@@ -319,10 +320,8 @@ function PetCareContent() {
 
     // Add timeout to prevent hanging searches
     const searchTimeout = setTimeout(() => {
-      if (isSearching) {
-        setIsSearching(false);
-        setSearchError("Search timed out. Please try again.");
-      }
+      setIsSearching(false);
+      setSearchError("Search timed out. Please try again.");
     }, 30000); // 30 second timeout
 
     try {
@@ -338,7 +337,17 @@ function PetCareContent() {
       const response = await fetch(`/api/pet-services?${params.toString()}`);
       
       if (!response.ok) {
-        throw new Error(`Search failed: ${response.status}`);
+        let detail = "";
+        try {
+          const err = await response.json();
+          detail =
+            (typeof err?.error === "string" && err.error) ||
+            (typeof err?.message === "string" && err.message) ||
+            "";
+        } catch {
+          // ignore JSON parse errors
+        }
+        throw new Error(detail ? `${detail} (HTTP ${response.status})` : `Search failed: ${response.status}`);
       }
 
       const data = await response.json();
@@ -363,6 +372,11 @@ function PetCareContent() {
     // Only auto-search if we have city/state from URL params, not from localStorage
     const cityParam = searchParams.get("city");
     const stateParam = searchParams.get("state");
+    const categoriesParam = searchParams.get("categories") || "";
+    const openNowParam = searchParams.get("openNow") || "";
+    const emergencyParam = searchParams.get("emergency") || "";
+    const insuranceParam = searchParams.get("acceptsInsurance") || "";
+    const sortParam = searchParams.get("sort") || "";
     
     // Prevent auto-search if:
     // 1. We're already searching
@@ -370,6 +384,9 @@ function PetCareContent() {
     // 3. We already have search results for this location
     // 4. The search was triggered by URL update (not user action)
     if (cityParam && stateParam && !isInitializing && !isSearching && !hasSearched) {
+      const autoKey = `${cityParam}-${stateParam}-${categoriesParam}-${openNowParam}-${emergencyParam}-${insuranceParam}-${sortParam}`;
+      if (lastAutoSearchKey.current === autoKey) return;
+      lastAutoSearchKey.current = autoKey;
       // Only auto-search if URL params are present and we're not in a search state
       search();
     }
